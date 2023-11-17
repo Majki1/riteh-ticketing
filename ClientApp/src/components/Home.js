@@ -7,12 +7,12 @@ export class Home extends Component {
 
   render() {
     return (
-<div class="hero min-h-screen bg-base-200">
+<div class="hero min-h-screen bg-base-100">
   <div class="hero-content text-center">
     <div class="max-w-md">
       <h1 class="text-5xl font-bold text-white">Dobro došli</h1>
       <p class="py-6 text-white">Random text zamjenit cu kasnije</p>
-      <Link className="btn btn-primary" to="Tickets">Podigni ticket</Link>
+      <Link className="btn bg-slate-500 text-white" to="Tickets">Podigni ticket</Link>
     </div>
   </div>
 </div>
