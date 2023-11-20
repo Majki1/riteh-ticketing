@@ -67,56 +67,59 @@ export class Tickets extends Component {
           <option value="dummy2" className='text-white'>Dummy 2</option>
         </select>
 
-        <div className="mx-auto max-w-xl">
-          <form action="" className="space-y-5">
-            <div className="grid grid-cols-12 gap-5">
-              <div className="col-span-6">
-                <label htmlFor="example7" className="mb-1 block text-sm font-medium text-white">Ticket</label>
-                <input
-                  type="text"
-                  id="example7"
-                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-400 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:cursor-not-allowed text-white disabled:bg-gray-50 disabled:text-white"
-                  placeholder="Ticket"
-                  value={selectedTicket}
-                  readOnly
-                />
+        {selectedTicket && (
+          <div className="mx-auto max-w-xl">
+            <form action="" className="space-y-5">
+              <div className="grid grid-cols-12 gap-5">
+                <div className="col-span-6">
+                  <label htmlFor="example7" className="mb-1 block text-sm font-medium text-white">Ticket</label>
+                  <input
+                    type="text"
+                    id="example7"
+                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-400 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:cursor-not-allowed text-white disabled:bg-gray-50 disabled:text-white"
+                    placeholder="Ticket"
+                    value={selectedTicket}
+                    readOnly
+                  />
+                </div>
+                <div className="col-span-6">
+                  <label htmlFor="example8" className="mb-1 block text-sm font-medium text-white">Password</label>
+                  <input
+                    type="password"
+                    id="example8"
+                    name="password"
+                    value={formData.password}
+                    onChange={this.handleChange}
+                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-400 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:cursor-not-allowed text-white disabled:bg-gray-50 disabled:text-white"
+                    placeholder="Enter your password"
+                  />
+                </div>
+                <div className="col-span-6">
+                  <label htmlFor="example9" className="mb-1 block text-sm font-medium text-white">First Name</label>
+                  <input
+                    type="text"
+                    id="example9"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={this.handleChange}
+                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-400 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:cursor-not-allowed text-white disabled:bg-gray-50 disabled:text-white"
+                    placeholder="Enter your first name"
+                  />
+                </div>
+                {/* Include other form fields here */}
+                <div className="col-span-12">
+                  <button
+                    type="button"
+                    onClick={this.handleSubmit}
+                    className="rounded-lg border border-primary-500 bg-primary-500 px-5 py-2.5 text-center text-sm font-medium text-white shadow-sm transition-all hover:border-primary-700 hover:bg-primary-700 focus:ring focus:ring-primary-200 disabled:cursor-not-allowed disabled:border-primary-300 disabled:bg-primary-300"
+                  >
+                    Submit
+                  </button>
+                </div>
               </div>
-              <div className="col-span-6">
-                <label htmlFor="example8" className="mb-1 block text-sm font-medium text-white">Password</label>
-                <input
-                  type="password"
-                  id="example8"
-                  name="password"
-                  value={formData.password}
-                  onChange={this.handleChange}
-                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-400 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:cursor-not-allowed text-white disabled:bg-gray-50 disabled:text-white"
-                  placeholder="Enter your password"
-                />
-              </div>
-              <div className="col-span-6">
-                <label htmlFor="example9" className="mb-1 block text-sm font-medium text-white">First Name</label>
-                <input
-                  type="text"
-                  id="example9"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={this.handleChange}
-                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-400 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:cursor-not-allowed text-white disabled:bg-gray-50 disabled:text-white"
-                  placeholder="Enter your first name"
-                />
-              </div>
-            </div>
-            <div className="col-span-12">
-              <button
-                type="button"
-                onClick={this.handleSubmit}
-                className="rounded-lg border border-primary-500 bg-primary-500 px-5 py-2.5 text-center text-sm font-medium text-white shadow-sm transition-all hover:border-primary-700 hover:bg-primary-700 focus:ring focus:ring-primary-200 disabled:cursor-not-allowed disabled:border-primary-300 disabled:bg-primary-300"
-              >
-                Submit
-              </button>
-            </div>
-          </form>
-        </div>
+            </form>
+          </div>
+        )}
       </div>
     );
   }
