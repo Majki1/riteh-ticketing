@@ -23,6 +23,7 @@ export class Tickets extends Component {
         bio: '',
         photo: '',
       },
+      ticketOptions: ['Dummy 1', 'Dummy 2', 'Nesto tamo'], // Add your ticket options here
     };
   }
 
@@ -53,19 +54,22 @@ export class Tickets extends Component {
   };
 
   render() {
-    const { selectedTicket, formData } = this.state;
+    const { selectedTicket, formData, ticketOptions } = this.state;
 
     return (
       <div>
-        <select
+        <input
+          type="text"
+          list="ticketOptions"
           className="select select-bordered w-full max-w-xs text-white bg-slate-700"
-          defaultValue=""
+          placeholder="Search and select a ticket"
           onChange={this.handleTicketChange}
-        >
-          <option value="" disabled className='text-white'>Odeberite Ticket</option>
-          <option value="dummy1" className='text-white'>Dummy 1</option>
-          <option value="dummy2" className='text-white'>Dummy 2</option>
-        </select>
+        />
+        <datalist id="ticketOptions">
+          {ticketOptions.map((option, index) => (
+            <option key={index} value={option} />
+          ))}
+        </datalist>
 
         {selectedTicket && (
           <div className="mx-auto max-w-xl">
@@ -80,30 +84,6 @@ export class Tickets extends Component {
                     placeholder="Ticket"
                     value={selectedTicket}
                     readOnly
-                  />
-                </div>
-                <div className="col-span-6">
-                  <label htmlFor="example8" className="mb-1 block text-sm font-medium text-white">Password</label>
-                  <input
-                    type="password"
-                    id="example8"
-                    name="password"
-                    value={formData.password}
-                    onChange={this.handleChange}
-                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-400 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:cursor-not-allowed text-white disabled:bg-gray-50 disabled:text-white"
-                    placeholder="Enter your password"
-                  />
-                </div>
-                <div className="col-span-6">
-                  <label htmlFor="example9" className="mb-1 block text-sm font-medium text-white">First Name</label>
-                  <input
-                    type="text"
-                    id="example9"
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={this.handleChange}
-                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-400 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:cursor-not-allowed text-white disabled:bg-gray-50 disabled:text-white"
-                    placeholder="Enter your first name"
                   />
                 </div>
                 {/* Include other form fields here */}
