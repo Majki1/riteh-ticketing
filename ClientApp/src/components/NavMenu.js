@@ -1,11 +1,10 @@
+// NavMenu.js
+
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import './NavMenu.css';
-import './component.css';
-
+import avatarPlaceholder from './images/Screenshot 2023-11-07 181027.png';
 export class NavMenu extends Component {
-  static displayName = NavMenu.name;
-
   constructor(props) {
     super(props);
     this.state = {
@@ -56,13 +55,18 @@ export class NavMenu extends Component {
                   </Link>
                 </li>
                 <li className="txt-white">
-                  <Link className="txt-white" to="/roles">
-                    Roles
+                  <Link className="txt-white" to="/Tickets">
+                    Ticketi
                   </Link>
                 </li>
                 <li className="txt-white">
-                  <Link className="txt-white" to="Tickets">
-                    Tickets
+                  <Link className="txt-white" to="/MyTickets">
+                    Moji ticketi
+                  </Link>
+                </li>
+                <li className="txt-white">
+                  <Link className="txt-white" to="/ZatvoreniTicketi">
+                    Zatvoreni ticketi
                   </Link>
                 </li>
               </ul>
@@ -102,10 +106,10 @@ export class NavMenu extends Component {
                   <a className="justify-between text-white">Profil</a>
                 </li>
                 <li>
-                  <a className="text-white">Settings</a>
+                  <a className="text-white">Postavke</a>
                 </li>
                 <li>
-                  <a className="text-white">Logout</a>
+                  <a className="text-white">Odjava</a>
                 </li>
               </ul>
             )}
@@ -115,10 +119,7 @@ export class NavMenu extends Component {
               onClick={this.toggleDropdown}
             >
               <div className="w-10 rounded-full">
-                <img
-                  alt="Tailwind CSS Navbar component"
-                  src="/src/Screenshot 2023-11-07 181027.png"
-                />
+                <img src={avatarPlaceholder}></img>
               </div>
             </label>
           </div>

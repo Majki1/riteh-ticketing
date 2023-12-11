@@ -1,41 +1,24 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import './component.css';
+import ritehLogo from './images/riteh_logo.png';
 
 export class Home extends Component {
   static displayName = Home.name;
 
   render() {
     return (
-<div class="hero min-h-screen bg-base-100">
-  <div class="hero-content flex-col lg:flex-row-reverse">
-    <div class="text-center lg:text-left">
-      <h1 class="text-5xl font-bold text-white">Login now!</h1>
-      <p class="py-6 text-white">Random text mrnjaaaaaaaau</p>
-    </div>
-    <div class="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
-      <form class="card-body">
-        <div class="form-control">
-          <label class="label">
-            <span class="label-text text-black">Email</span>
-          </label>
-          <input type="email" placeholder="email" class="input input-bordered" required />
-        </div>
-        <div class="form-control">
-          <label class="label">
-            <span class="label-text text-black">Password</span>
-          </label>
-          <input type="password" placeholder="password" class="input input-bordered" required />
-          <label class="label">
-            <a href="#" class="label-text-alt link link-hover text-black">Forgot password?</a>
-          </label>
-        </div>
-        <div class="mt-6 bg-base-100">
-          <button class="btn bg-slate-600 text-white">Login</button>
-        </div>
-      </form>
+      <div>
+<div className="hero min-h-screen bg-base-100">
+  <div className="hero-content flex-col lg:flex-row-reverse">
+    <img src={ritehLogo} className="max-w-sm rounded-lg shadow-2xl" />
+    <div className='justify-content-start'>
+      <h1 className="text-5xl font-bold text-white">Dobro došli</h1>
+      <p className="py-6 text-white">RiTeh ticketing sustav</p>
+      <Link className="btn btn-primary" to= '/LoginForm'>Prijava</Link>
     </div>
   </div>
+</div>
 </div>
     );
   }

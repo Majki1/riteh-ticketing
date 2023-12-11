@@ -1,6 +1,8 @@
-import { Roles } from "./components/roles";
 import { Tickets } from "./components/Tickets";
 import { Home } from "./components/Home";
+import MyTickets  from "./components/MyTickets";
+import { Closed } from "./components/ZatvoreniTicketi";
+import LoginForm from "./components/LoginForm";
 
 const AppRoutes = [
   {
@@ -8,12 +10,20 @@ const AppRoutes = [
     element: <Home />
   },
   {
-    path: '/Roles',
-    element: <Roles />
-  },
-  {
     path: '/Tickets',
     element: <Tickets />
+  },
+  {
+    path: '/MyTickets',
+    element: <MyTickets/>
+  },
+  {
+    path: '/ZatvoreniTicketi',
+    element: <Closed/>
+  },
+  {
+    path: '/LoginForm',
+    element: <LoginForm/>
   }
 ];
 
