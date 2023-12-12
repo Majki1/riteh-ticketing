@@ -6,21 +6,21 @@ const LoginForm = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch('https://localhost:443/api/auth/login', {
+      const response = await fetch('http://localhost:8080/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ userID: username, password: password }),
       });
 
-      if (response.ok) {
-        const data = await response.json();
+      const headers = await response.headers;
+      const data = await response.json();
 
-        console.log('Login successful. Token:', data.token);
-
+      if (response.ok & data.success) {
+          console.log('Login successful. Token:', headers.get('Authorization'));
       } else {
-        console.error('Login failed.');
+        console.error('Login failed. Server replied: ', data.description);
 
       }
     } catch (error) {
@@ -39,13 +39,13 @@ const LoginForm = () => {
       <div className="space-y-4">
         <div>
           <label for="email" className="block mb-2 text-sm">Email</label>
-          <input type="email" name="email" id="email" placeholder="pero@riteh.hr" className="w-full px-3 py-2 border rounded-md dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100" />
+          <input type="email" name="email" id="email" placeholder="pero@riteh.hr" className="w-full px-3 py-2 border rounded-md dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100" onChange={(event) => setUsername(event.target.value)} />
         </div>
         <div>
           <div className="flex justify-between mb-2">
             <label for="password" className="text-sm">Password</label>
           </div>
-          <input type="password" name="password" id="password" placeholder="*****" className="w-full px-3 py-2 border rounded-md dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100" />
+          <input type="password" name="password" id="password" placeholder="*****" className="w-full px-3 py-2 border rounded-md dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100" onChange={(event) => setPassword(event.target.value)} />
         </div>
       </div>
       <div className="space-y-2">
