@@ -1,31 +1,31 @@
 import React, { useState } from 'react';
 
-const LoginForm = () => {
+const LoginForm = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
-    try {
-      const response = await fetch('http://localhost:8080/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userID: username, password: password }),
-      });
+      try {
+        const response = await fetch('http://localhost:8080/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userID: username, password: password }),
+        });
+  
+        const headers = await response.headers;
+        const data = await response.json();
 
-      const headers = await response.headers;
-      const data = await response.json();
-
-      if (response.ok & data.success) {
-          console.log('Login successful. Token:', headers.get('Authorization'));
+      if (response.ok && data.success) {
+        console.log('Login successful. Token:', headers.get('Authorization'));
+        
+        onLogin({ username, password, token: headers.get('Authorization') });
       } else {
         console.error('Login failed. Server replied: ', data.description);
-
       }
     } catch (error) {
       console.error('Error during login:', error);
-
     }
   };
 

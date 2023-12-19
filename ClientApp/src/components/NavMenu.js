@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import './NavMenu.css';
 import avatarPlaceholder from './images/Screenshot 2023-11-07 181027.png';
+import PostLogin from '../PostLogin';
 export class NavMenu extends Component {
   constructor(props) {
     super(props);
@@ -19,8 +20,13 @@ export class NavMenu extends Component {
   };
 
   render() {
+    const { isAuthenticated } = this.props;
     const { isDropdownVisible } = this.state;
 
+    if (!isAuthenticated) {
+      console.log(1);
+      return null;
+    }
     return (
       <header>
         <div className="navbar bg-base-100 border-bottom">
@@ -128,3 +134,4 @@ export class NavMenu extends Component {
     );
   }
 }
+export default NavMenu;

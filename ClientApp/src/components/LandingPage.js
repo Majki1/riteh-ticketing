@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import './component.css';
 import ritehLogo from './images/riteh_logo.png';
 
-export class Home extends Component {
-  static displayName = Home.name;
+export class LandingPage extends Component {
+  static displayName = LandingPage.name;
 
   render() {
     return (

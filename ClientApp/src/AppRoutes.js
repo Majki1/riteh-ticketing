@@ -1,13 +1,14 @@
 import { Tickets } from "./components/Tickets";
-import { Home } from "./components/Home";
+import { LandingPage } from "./components/LandingPage";
 import MyTickets  from "./components/MyTickets";
 import { Closed } from "./components/ZatvoreniTicketi";
 import LoginForm from "./components/LoginForm";
+import PostLogin from "./PostLogin";
 
 const AppRoutes = [
   {
     index: true,
-    element: <Home />
+    element: <LandingPage />
   },
   {
     path: '/Tickets',
@@ -24,6 +25,10 @@ const AppRoutes = [
   {
     path: '/LoginForm',
     element: <LoginForm/>
+  },
+  {
+    path: '/PostLogin',
+    element: <PostLogin/>
   }
 ];
 
