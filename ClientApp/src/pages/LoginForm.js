@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
       try {
@@ -21,6 +23,7 @@ const LoginForm = ({ onLogin }) => {
         console.log('Login successful. Token:', headers.get('Authorization'));
         
         onLogin({ username, password, token: headers.get('Authorization') });
+        navigate('/PostLogin');
       } else {
         console.error('Login failed. Server replied: ', data.description);
       }
@@ -29,13 +32,22 @@ const LoginForm = ({ onLogin }) => {
     }
   };
 
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleLogin(event);
+    }
+  }
+
   return (
     <div className="mx-auto max-w-md p-6 rounded-md min-h-screen sm:p-10 bg-transparent dark:bg-gray-900 dark:text-gray-100">
     <div className="mb-8 text-center">
       <h1 className="justify-content-top my-3 text-4xl font-bold">Sign in</h1>
       <p className="text-sm dark:text-gray-400">Sign in to access your account</p>
     </div>
-    <form novalidate="" action="" className="space-y-12">
+    <form novalidate="" action="" className="space-y-12" onSubmit={(e) => {
+      e.preventDefault()
+      handleLogin()
+    }}>
       <div className="space-y-4">
         <div>
           <label for="email" className="block mb-2 text-sm">Email</label>
@@ -50,7 +62,7 @@ const LoginForm = ({ onLogin }) => {
       </div>
       <div className="space-y-2">
         <div>
-          <button type="button" className="w-full px-8 py-3 font-semibold rounded-md dark:bg-slate-400 dark:text-gray-900 hover:bg-slate-950 hover:text-white" onClick={handleLogin}>Sign in</button>
+          <button type="submit" className="w-full px-8 py-3 text-black font-semibold rounded-md btn bg-gradient-to-r from-green-400 to-blue-500 hover:from-pink-500 hover:to-yellow-500" >Sign in</button>
         </div>
       </div>
     </form>

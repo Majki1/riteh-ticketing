@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
-import './component.css';
+import './pages.css';
 import axios from 'axios';
+import NavMenu from '../components/NavMenu/NavMenu';
+
+const isAuthenticated = 1;
 
 
 export class Tickets extends Component {
@@ -69,7 +72,9 @@ export class Tickets extends Component {
     const { selectedTicket, formData, ticketOptions } = this.state;
 
     return (
-      <div className='min-h-screen'>
+      <main>
+      <NavMenu isAuthenticated={isAuthenticated} />
+      <div className='min-h-screen px-5 pt-20'>
         <input
           type="text"
           list="ticketOptions"
@@ -129,6 +134,7 @@ export class Tickets extends Component {
           </div>
         )}
       </div>
+      </main>
     );
   }
 }

@@ -1,7 +1,12 @@
 import React from 'react';
+import NavMenu from '../components/NavMenu/NavMenu';
+const isAuthenticated = 1;
+
 
 const MyTickets = ({ formData }) => {
   return (
+    <>
+    <NavMenu isAuthenticated={isAuthenticated} />
     <div className="min-h-screen">
       {formData && (
         <div>
@@ -11,6 +16,7 @@ const MyTickets = ({ formData }) => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

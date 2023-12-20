@@ -1,9 +1,11 @@
-import { Tickets } from "./components/Tickets";
-import { LandingPage } from "./components/LandingPage";
-import MyTickets  from "./components/MyTickets";
-import { Closed } from "./components/ZatvoreniTicketi";
-import LoginForm from "./components/LoginForm";
+import { Tickets } from "./pages/Tickets";
+import { LandingPage } from "./pages/LandingPage";
+import MyTickets  from "./pages/MyTickets";
+import { Closed } from "./pages/ZatvoreniTicketi";
+import LoginForm from "./pages/LoginForm";
 import PostLogin from "./PostLogin";
+import NavMenu from "./components/NavMenu/NavMenu"
+import  Welcome  from './pages/WelcomePage'
 
 const AppRoutes = [
   {
@@ -24,11 +26,15 @@ const AppRoutes = [
   },
   {
     path: '/LoginForm',
-    element: <LoginForm/>
+    element: <PostLogin />
   },
   {
     path: '/PostLogin',
     element: <PostLogin/>
+  },
+  {
+    path: '/Welcome',
+    element: <Welcome/>
   }
 ];
 

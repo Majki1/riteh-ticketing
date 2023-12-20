@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import './NavMenu.css';
 import avatarPlaceholder from './images/Screenshot 2023-11-07 181027.png';
-import PostLogin from '../PostLogin';
+//import PostLogin from '../../PostLogin';
 export class NavMenu extends Component {
   constructor(props) {
     super(props);
@@ -22,14 +22,14 @@ export class NavMenu extends Component {
   render() {
     const { isAuthenticated } = this.props;
     const { isDropdownVisible } = this.state;
+    console.log(this.props);
 
     if (!isAuthenticated) {
-      console.log(1);
       return null;
     }
     return (
-      <header>
-        <div className="navbar bg-base-100 border-bottom">
+      <header className='min-w-full'>
+        <div className="navbar bg-base-100 border-bottom min-w-full">
           <div className="navbar-start">
             <div className="dropdown">
               <label
@@ -56,7 +56,7 @@ export class NavMenu extends Component {
                 className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 text-white"
               >
                 <li className="txt-white">
-                  <Link className="txt-white" to="/">
+                  <Link className="txt-white" to="/PostLogin">
                     Homepage
                   </Link>
                 </li>
@@ -78,7 +78,7 @@ export class NavMenu extends Component {
               </ul>
             </div>
             <div className="navbar-center">
-              <Link className="btn btn-ghost text-xl text-white" to="/">Ticket System</Link>
+              <Link className="btn btn-ghost text-xl text-white" to="/PostLogin">Ticket System</Link>
             </div>
           </div>
           <div className="navbar-end">
