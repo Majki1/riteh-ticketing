@@ -26,7 +26,7 @@ const PostLogin = () => {
       {isAuthenticated ? (
         <>
         <NavMenu isAuthenticated={isAuthenticated} />
-        <Welcome userData={userData}/>
+        <Welcome />
         </>
       ) : (    
         <LoginForm onLogin={handleLogin} />

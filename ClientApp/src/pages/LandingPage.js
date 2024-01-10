@@ -15,7 +15,7 @@ export class LandingPage extends Component {
     <div className='justify-content-start'>
       <h1 className="text-5xl bg-gradient-to-r from-green-400 to-blue-500 inline-block text-transparent bg-clip-text p-2"><strong>RiTeh</strong> ticketing sustav</h1>
       <p className="py-6 px-2 text-white">Prijavite se za slanje ticketa</p>
-      <Link className="btn bg-gradient-to-r from-green-400 to-blue-500 hover:from-pink-500 hover:to-yellow-500" to= '/LoginForm'>Prijava</Link>
+      <Link className="btn bg-gradient-to-r text-white from-green-400 to-blue-500 hover:from-pink-500 hover:to-yellow-500" to= '/LoginForm'>Prijava</Link>
     </div>
   </div>
 </div>
