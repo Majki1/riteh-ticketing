@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+<<<<<<< HEAD
+=======
+
+>>>>>>> 174fcaedb3929677014d6e1b159071c9285b5f46
 
 const LoginForm = ({ onLogin }) => {
   const [username, setUsername] = useState('');
@@ -23,7 +27,11 @@ const LoginForm = ({ onLogin }) => {
       if (response.ok && data.success) {
         const token = headers.get('Authorization');
         console.log('Login successful. Token:', token);
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> 174fcaedb3929677014d6e1b159071c9285b5f46
         Cookies.set('jwtToken', token, { expires: 7 }); // expires in 7 days
 
         onLogin({ username, password, token });
@@ -66,7 +74,7 @@ const LoginForm = ({ onLogin }) => {
       </div>
       <div className="space-y-2">
         <div>
-          <button type="submit" className="w-full px-8 py-3 text-black font-semibold rounded-md btn bg-gradient-to-r from-green-400 to-blue-500 hover:from-pink-500 hover:to-yellow-500" >Sign in</button>
+          <button type="submit" className="w-full px-8 py-3 text-white font-semibold rounded-md btn bg-gradient-to-r from-green-400 to-blue-500 hover:from-pink-500 hover:to-yellow-500" >Sign in</button>
         </div>
       </div>
     </form>

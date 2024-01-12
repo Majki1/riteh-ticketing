@@ -115,7 +115,7 @@ const Tickets = () => {
             <form action="" className="space-y-5">
               <div className="grid grid-cols-12 gap-5">
                 <div className="col-span-6">
-                  <label htmlFor="example7" className="mb-1 block text-sm font-medium text-white">Ticket</label>
+                  <label htmlFor="example7" className="mb-1 block text-sm font-medium text-white">Kategorija</label>
                   <input
                     type="text"
                     id="example7"
