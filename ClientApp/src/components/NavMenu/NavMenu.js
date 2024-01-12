@@ -1,34 +1,48 @@
-// NavMenu.js
-
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './NavMenu.css';
-import avatarPlaceholder from './images/Screenshot 2023-11-07 181027.png';
-//import PostLogin from '../../PostLogin';
-export class NavMenu extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isDropdownVisible: false,
-    };
-  }
 
-  toggleDropdown = () => {
-    this.setState((prevState) => ({
-      isDropdownVisible: !prevState.isDropdownVisible,
-    }));
+const isAuthenticated = 1;
+
+const NavMenu = ({ isAuthenticated }) => {
+  const [isDropdownVisible, setDropdownVisible] = useState(false);
+
+  const toggleDropdown = () => {
+    setDropdownVisible(!isDropdownVisible);
   };
 
-  render() {
-    const { isAuthenticated } = this.props;
-    const { isDropdownVisible } = this.state;
-    console.log(this.props);
+    const [imageUrl, setImageUrl] = useState('');
+  
+    useEffect(() => {
+      const fetchImage = async () => {
+        try {
+          const jwt = document.cookie.split(';').find(cookie => cookie.startsWith('jwt='));
+          const response = await fetch('http://localhost:8080/api/user/get-profile-photo', {
+            method: 'POST',
+            headers: {
+              'Authorization': jwt
+            }
+          });
+    
+          if (!response.ok) {
+            throw new Error('Failed to fetch image');
+          }
+    
+          const imageBlob = await response.blob();
+          const imageUrl = URL.createObjectURL(imageBlob);
+          setImageUrl(imageUrl);
+          // console.log(1);
+        } catch (error) {
+          console.error('Error fetching image:', error);
+        }
+      };
+    
+      fetchImage();
+    }, []);
 
-    if (!isAuthenticated) {
-      return null;
-    }
-    return (
-      <header className='min-w-full'>
+  return (
+    <header className='min-w-full'>
+      {isAuthenticated && (
         <div className="navbar bg-base-100 border-bottom min-w-full">
           <div className="navbar-start">
             <div className="dropdown">
@@ -56,7 +70,7 @@ export class NavMenu extends Component {
                 className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 text-white"
               >
                 <li className="txt-white">
-                  <Link className="txt-white" to="/PostLogin">
+                  <Link className="txt-white" to="/Welcome">
                     Homepage
                   </Link>
                 </li>
@@ -78,13 +92,13 @@ export class NavMenu extends Component {
               </ul>
             </div>
             <div className="navbar-center">
-              <Link className="btn btn-ghost text-xl text-white" to="/PostLogin">Ticket System</Link>
+              <Link className="btn btn-ghost text-xl text-white" to="/Welcome">
+                Ticket System
+              </Link>
             </div>
           </div>
           <div className="navbar-end">
-            <button
-              className="btn btn-ghost btn-circle text-white"
-            >
+            <button className="btn btn-ghost btn-circle text-white">
               <div className="indicator">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -122,16 +136,17 @@ export class NavMenu extends Component {
             <label
               tabIndex={1}
               className="btn btn-ghost btn-circle avatar"
-              onClick={this.toggleDropdown}
+              onClick={toggleDropdown}
             >
               <div className="w-10 rounded-full">
-                <img src={avatarPlaceholder}></img>
+                <img src={imageUrl} alt="Fetched Image" />
               </div>
             </label>
           </div>
         </div>
-      </header>
-    );
-  }
+      )}
+    </header>
+  );
 }
+
 export default NavMenu;

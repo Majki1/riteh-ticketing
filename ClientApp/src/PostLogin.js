@@ -11,7 +11,6 @@ const PostLogin = () => {
   const [userData, setUserData] = useState(null);
 
   const handleLogin = (userData) => {
-    console.log('User data after login:', userData);
     setUserData(userData);
     setIsAuthenticated(true);
   };

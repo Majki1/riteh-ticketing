@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 const LoginForm = ({ onLogin }) => {
   const [username, setUsername] = useState('');
@@ -20,9 +21,12 @@ const LoginForm = ({ onLogin }) => {
         const data = await response.json();
 
       if (response.ok && data.success) {
-        console.log('Login successful. Token:', headers.get('Authorization'));
-        
-        onLogin({ username, password, token: headers.get('Authorization') });
+        const token = headers.get('Authorization');
+        console.log('Login successful. Token:', token);
+    
+        Cookies.set('jwtToken', token, { expires: 7 }); // expires in 7 days
+
+        onLogin({ username, password, token });
         navigate('/PostLogin');
       } else {
         console.error('Login failed. Server replied: ', data.description);

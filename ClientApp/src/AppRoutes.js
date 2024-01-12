@@ -1,4 +1,4 @@
-import { Tickets } from "./pages/Tickets";
+import  Tickets  from "./pages/Tickets";
 import { LandingPage } from "./pages/LandingPage";
 import MyTickets  from "./pages/MyTickets";
 import { Closed } from "./pages/ZatvoreniTicketi";
