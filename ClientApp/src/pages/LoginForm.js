@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-<<<<<<< HEAD
-=======
-
->>>>>>> 174fcaedb3929677014d6e1b159071c9285b5f46
 
 const LoginForm = ({ onLogin }) => {
   const [username, setUsername] = useState('');
@@ -27,11 +23,7 @@ const LoginForm = ({ onLogin }) => {
       if (response.ok && data.success) {
         const token = headers.get('Authorization');
         console.log('Login successful. Token:', token);
-<<<<<<< HEAD
     
-=======
-
->>>>>>> 174fcaedb3929677014d6e1b159071c9285b5f46
         Cookies.set('jwtToken', token, { expires: 7 }); // expires in 7 days
 
         onLogin({ username, password, token });

@@ -68,11 +68,12 @@ const Tickets = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const jwt = document.cookie.split(';').find(cookie => cookie.startsWith('jwt='));
+        const jwt = document.cookie.split(';').find(cookie => cookie.startsWith('jwt'));
+        console.log(jwt.slice(9));
         const response = await fetch('http://localhost:8080/api/category/get-all', {
           method: 'POST',
           headers: {
-            'Authorization': 'Bearer ' + jwt
+            'Authorization': jwt.slice(9)
           }
         });
   
@@ -81,6 +82,7 @@ const Tickets = () => {
         }
   
         const fetchedCategories = await response.json();
+        console.log(fetchedCategories);
         setCategories(fetchedCategories);
         setSelectedTicket(fetchedCategories.length > 0 ? fetchedCategories[0] : null);
   

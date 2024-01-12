@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './NavMenu.css';
 
-<<<<<<< HEAD
+
 const isAuthenticated = 1;
 
-=======
->>>>>>> 174fcaedb3929677014d6e1b159071c9285b5f46
+
 const NavMenu = ({ isAuthenticated }) => {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
 
@@ -14,12 +13,11 @@ const NavMenu = ({ isAuthenticated }) => {
     setDropdownVisible(!isDropdownVisible);
   };
 
-    const [imageUrl, setImageUrl] = useState('');
+    const [imageurl, setImageUrl] = useState('');
   
     useEffect(() => {
       const fetchImage = async () => {
         try {
-<<<<<<< HEAD
           const jwt = document.cookie.split(';').find(cookie => cookie.startsWith('jwt='));
           const response = await fetch('http://localhost:8080/api/user/get-profile-photo', {
             method: 'POST',
@@ -43,27 +41,8 @@ const NavMenu = ({ isAuthenticated }) => {
     
       fetchImage();
     }, []);
+    
 
-=======
-          const response = await fetch('http://localhost:8080/api/user/get-profile-photo');
-          if (!response.ok) {
-            throw new Error('Failed to fetch image');
-          }
-  
-          const imageBlob = await response.blob();
-          const imageUrl = URL.createObjectURL(imageBlob);
-          setImageUrl(imageUrl);
-          //console.log(1);
-
-        } catch (error) {
-          console.error('Error fetching image:', error);
-        }
-      };
-  
-      fetchImage();
-    }, []);
-
->>>>>>> 174fcaedb3929677014d6e1b159071c9285b5f46
   return (
     <header className='min-w-full'>
       {isAuthenticated && (
@@ -163,7 +142,7 @@ const NavMenu = ({ isAuthenticated }) => {
               onClick={toggleDropdown}
             >
               <div className="w-10 rounded-full">
-                <img src={imageUrl} alt="Fetched Image" />
+                <img src={imageurl} alt="Fetched Image" />
               </div>
             </label>
           </div>
@@ -173,8 +152,6 @@ const NavMenu = ({ isAuthenticated }) => {
   );
 }
 
-<<<<<<< HEAD
+
 export default NavMenu;
-=======
-export default NavMenu;
->>>>>>> 174fcaedb3929677014d6e1b159071c9285b5f46
+
