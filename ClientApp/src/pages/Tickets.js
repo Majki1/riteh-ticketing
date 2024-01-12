@@ -23,7 +23,7 @@ const Tickets = () => {
     const requestOptions = {
       method: 'POST',
       headers: {
-        'Authorization': 'Bearer ' + jwt,
+        'Authorization': jwt.slice(9).replaceAll("%20", ' '),
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ title, description, room, categoryID, parentID, realApplicantID }),
@@ -73,7 +73,7 @@ const Tickets = () => {
         const response = await fetch('http://localhost:8080/api/category/get-all', {
           method: 'POST',
           headers: {
-            'Authorization': jwt.slice(9)
+            'Authorization': jwt.slice(9).replaceAll("%20", ' ')
           }
         });
   
@@ -108,7 +108,7 @@ const Tickets = () => {
         />
         <datalist id="ticketOptions">
           {categories.map((option, index) => (
-            <option key={index} value={option} />
+            <option key={index} value={option.name} title={option.name} />
           ))}
         </datalist>
 
@@ -194,7 +194,7 @@ const Tickets = () => {
                 <div className="col-span-12">
                   <button
                     type="button"
-                    onSubmit={submitForm}
+                    onSubmit={(submitForm)}
                     className="rounded-lg border border-primary-500 bg-primary-500 px-5 py-2.5 text-center text-sm font-medium text-white shadow-sm transition-all hover:border-primary-700 hover:bg-primary-700 focus:ring focus:ring-primary-200 disabled:cursor-not-allowed disabled:border-primary-300 disabled:bg-primary-300"
                   >
                     Submit

@@ -18,11 +18,11 @@ const NavMenu = ({ isAuthenticated }) => {
     useEffect(() => {
       const fetchImage = async () => {
         try {
-          const jwt = document.cookie.split(';').find(cookie => cookie.startsWith('jwt='));
+          const jwt = document.cookie.split(';').find(cookie => cookie.startsWith('jwt'));
           const response = await fetch('http://localhost:8080/api/user/get-profile-photo', {
             method: 'POST',
             headers: {
-              'Authorization': jwt
+              'Authorization': jwt.slice(9).replaceAll("%20", ' ')
             }
           });
     
