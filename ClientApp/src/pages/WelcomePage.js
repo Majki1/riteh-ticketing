@@ -7,17 +7,33 @@ import Cookies from 'js-cookie';
 
 const Welcome = () => {
   const [FirstName, setFirstName] = useState("");
-  const [LastName, setLastName] = useState("");
+  //const [LastName, setLastName] = useState("");
   const [isTableVisible, setTableVisible] = useState(false);
 
   const toggleTableVisibility = () => {
     setTableVisible(!isTableVisible);
   };
 
-  /*useEffect ( () => {
-    //TODO access cookie data
-
-  }, []);*/
+  useEffect(() => {
+    const jwt = Cookies.get('jwtToken'); 
+    if (!jwt) {
+      console.error('JWT not found in cookies');
+      return;
+    }
+  
+    const payloadBase64Url = jwt.split('.')[1];
+    const payloadBase64 = payloadBase64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const payloadJson = atob(payloadBase64);
+    const payload = JSON.parse(payloadJson);
+  
+    const username = payload.firstName; 
+    if (!username) {
+      console.error('Username not found in JWT payload');
+      return;
+    }
+  
+    setFirstName(username); 
+  }, []);
 
   
 
@@ -32,6 +48,7 @@ const Welcome = () => {
                 <thead class="bg-slate-600">
                   <tr>
                     <th scope="col" class="px-6 py-4 font-medium text-gray-900">Name</th>
+                    <th scope="col" class="px-6 py-4 font-medium text-gray-900">Room</th>
                     <th scope="col" class="px-6 py-4 font-medium text-gray-900">Time</th>
                     <th scope="col" class="px-6 py-4 font-medium text-gray-900">Title</th>
                     <th scope="col" class="px-6 py-4 font-medium text-gray-900">State</th>
@@ -41,6 +58,7 @@ const Welcome = () => {
                 <tbody class="divide-y divide-slate-800 border-t border-slate-800">
                   <tr class="hover:bg-slate-600">
                     <th class="px-6 py-4 font-medium text-white">username</th>
+                    <td class="px-6 py-4 text-white">room</td>
                     <td class="px-6 py-4 text-white">time</td>
                     <td class="px-6 py-4 text-white">title</td>
                     <td class="px-6 py-4 text-white">
@@ -55,6 +73,7 @@ const Welcome = () => {
                   </tr>
                   <tr class="hover:bg-slate-600">
                     <th class="px-6 py-4 font-medium text-white">username</th>
+                    <td class="px-6 py-4 text-white">room</td>
                     <td class="px-6 py-4 text-white">time</td>
                     <td class="px-6 py-4 text-white">title</td>
                     <td class="px-6 py-4 text-white">
@@ -74,7 +93,7 @@ const Welcome = () => {
             </div>
 
               <div className='justify-content-start'>
-                <h1 className="text-5xl bg-gradient-to-r from-green-400 to-blue-500 inline-block text-transparent bg-clip-text p-2 font-bold">Dobro došli {FirstName + LastName}</h1>
+                <h1 className="text-5xl bg-gradient-to-r from-green-400 to-blue-500 inline-block text-transparent bg-clip-text p-2 font-bold">Dobro došli {FirstName}</h1>
                 <p className="py-6 px-2 text-white">RiTeh ticketing sustav</p>
                 <Link className="btn bg-gradient-to-r text-white from-green-400 to-blue-500 hover:from-pink-500 hover:to-yellow-500" to= '/Tickets'>Ticket</Link>
                  <button
