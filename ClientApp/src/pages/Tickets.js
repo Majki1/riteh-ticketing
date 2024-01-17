@@ -36,6 +36,7 @@ const Tickets = () => {
   
     try {
       const response = await fetch('http://localhost:8080/api/ticket/new', requestOptions);
+      //console.log(response.json());
       if (!response.ok) {
         const responseBody = await response.text();
         console.error('Server responded with status', response.status, 'and body', responseBody);
@@ -69,15 +70,6 @@ const Tickets = () => {
     setFormData((prevFormData) => ({
       ...prevFormData,
       ticket: selectedTicket,
-    }));
-  };
-
-  const handleChange = (event) => {
-    const { name, value, type, checked } = event.target;
-
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: type === 'checkbox' ? checked : value,
     }));
   };
 
@@ -140,6 +132,26 @@ const Tickets = () => {
     fetchRooms();
   }, []);
 
+  const handleChange = (event) => {
+    const { name, value, type, checked } = event.target;
+  
+    if (name === 'selectedTicket') {
+      const selectedCategory = categories.find(category => category.name === value);
+      if (selectedCategory) {
+        setFormData(prevFormData => ({
+          ...prevFormData,
+          [name]: value,
+          categoryID: selectedCategory.id,
+        }));
+      }
+    } else {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: type === 'checkbox' ? checked : value,
+      }));
+    }
+  };
+
     return (
       <main>
       <NavMenu isAuthenticated={isAuthenticated} />
@@ -149,7 +161,8 @@ const Tickets = () => {
           list="ticketOptions"
           className="select select-bordered w-full max-w-xs text-white bg-slate-700"
           placeholder="Search and select a ticket"
-          onChange={handleTicketChange}
+          name='selectedTicket'
+          onChange={handleChange}
         />
         <datalist id="ticketOptions">
           {categories.map((option, index) => (
