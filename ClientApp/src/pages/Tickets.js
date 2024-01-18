@@ -31,7 +31,7 @@ const Tickets = () => {
         'Authorization': jwt.slice(9).replaceAll("%20", ' '),
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({title, room, categoryID}),
+      body: JSON.stringify({title, room, categoryID, realApplicantID, parentID, description}),
     };
   
     console.log('JWT:', jwt);
