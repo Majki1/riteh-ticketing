@@ -19,7 +19,10 @@ const Tickets = () => {
   });
   const [categories, setCategories] = useState([]);
 
-  const submitForm = async () => {//TODO fix data sent to server or whatever tf is wrong with this
+  const [isTicketCreationSuccessful, setIsTicketCreationSuccessful] = useState(false);
+  const [isTicketCreationFailed, setIsTicketCreationFailed] = useState(false);
+  
+  const submitForm = async () => {
     const jwt = document.cookie.split(';').find(cookie => cookie.startsWith('jwt'));
     const { title, description, room, categoryID, parentID, realApplicantID } = formData;
     const requestOptions = {
@@ -28,7 +31,7 @@ const Tickets = () => {
         'Authorization': jwt.slice(9).replaceAll("%20", ' '),
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ title, description, room, categoryID, parentID, realApplicantID }),
+      body: JSON.stringify({title, room, categoryID}),
     };
   
     console.log('JWT:', jwt);
@@ -36,22 +39,23 @@ const Tickets = () => {
   
     try {
       const response = await fetch('http://localhost:8080/api/ticket/new', requestOptions);
-      //console.log(response.json());
       if (!response.ok) {
         const responseBody = await response.text();
         console.error('Server responded with status', response.status, 'and body', responseBody);
         throw new Error('Failed to create ticket');
       }
-    
+  
       const responseData = await response.json();
       if (!responseData.success) {
         throw new Error(responseData.errorDescription);
       }
-    
-      alert('Ticket created successfully');
+  
+      setIsTicketCreationSuccessful(true);
+      setTimeout(() => setIsTicketCreationSuccessful(false), 5000); 
     } catch (error) {
       console.error('Error creating ticket:', error);
-      alert('Error creating ticket:' + error.message);
+      setIsTicketCreationFailed(true);
+      setTimeout(() => setIsTicketCreationFailed(false), 5000); 
     }
   };
 
@@ -62,15 +66,6 @@ const Tickets = () => {
       ...formData,
       room: roomName,
     });
-  };
-
-  const handleTicketChange = (event) => {
-    const selectedTicket = event.target.value;
-    setSelectedTicket(selectedTicket);
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      ticket: selectedTicket,
-    }));
   };
 
   useEffect(() => {
@@ -156,6 +151,7 @@ const Tickets = () => {
       <main>
       <NavMenu isAuthenticated={isAuthenticated} />
       <div className='min-h-screen px-5 pt-20'>
+        <label htmlFor="ticket" className="mb-1 block text-sm font-medium text-white">Kategorija</label>
         <input
           type="text"
           list="ticketOptions"
@@ -174,17 +170,6 @@ const Tickets = () => {
           <div className="mx-auto max-w-xl">
             <form action="" className="space-y-5">
               <div className="grid grid-cols-12 gap-5">
-                <div className="col-span-6">
-                  <label htmlFor="example7" className="mb-1 block text-sm font-medium text-white">Kategorija</label>
-                  <input
-                    type="text"
-                    id="example7"
-                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-400 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:cursor-not-allowed text-white disabled:bg-gray-50 disabled:text-white"
-                    placeholder="Ticket"
-                    value={selectedTicket}
-                    readOnly
-                  />
-                </div>
 
                 <div className="col-span-6">
                   <label htmlFor="title" className="mb-1 block text-sm font-medium text-white">Naslov</label>
@@ -195,7 +180,9 @@ const Tickets = () => {
                     className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-400 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:cursor-not-allowed text-white disabled:bg-gray-50 disabled:text-white"
                     placeholder="Kratki opis problema"
                     value={formData.title}
-                    onChange={handleChange}
+                    onChange={(event) => {
+                      handleChange(event);
+                    }}
                   />
                 </div>
 
@@ -268,6 +255,23 @@ const Tickets = () => {
                 </div>
               </div>
             </form>
+          </div>
+        )}
+        {isTicketCreationSuccessful && (
+          <div role="alert" className="alert alert-success alert-bottom">
+            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>Ticket uspješno postavljen!</span>
+          </div>
+        )}
+
+        {isTicketCreationFailed && (
+          <div role="alert" className="alert alert-error alert-bottom">
+            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          <span>Error, pokušajte ponovo ili kontaktirajte admina.</span>
           </div>
         )}
       </div>

@@ -69,7 +69,7 @@ const Welcome = () => {
                       U obradi
                     </span>
                     </td>
-                  <td class="flex justify-end gap-4 px-6 py-4 font-medium"><a href="" class="text-primary-700">Details</a></td>
+                  <td class="flex justify-end gap-4 px-6 py-4 font-medium"><a href="/Active" class="text-primary-700">Details</a></td>
                   </tr>
                   <tr class="hover:bg-slate-600">
                     <th class="px-6 py-4 font-medium text-white">username</th>
@@ -84,7 +84,7 @@ const Welcome = () => {
                       U obradi
                     </span>
                     </td>
-                    <td class="flex justify-end gap-4 px-6 py-4 font-medium"><a href="" class="text-primary-700">Details</a></td>
+                    <td class="flex justify-end gap-4 px-6 py-4 font-medium"><a href="/Active" class="text-primary-700">Details</a></td>
                   </tr>
                 </tbody>
               </table>

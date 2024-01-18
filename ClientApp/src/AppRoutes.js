@@ -17,7 +17,7 @@ const AppRoutes = [
     element: <Tickets />
   },
   {
-    path: '/MyTickets',
+    path: '/Active',
     element: <MyTickets/>
   },
   {

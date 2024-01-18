@@ -83,8 +83,8 @@ const NavMenu = ({ isAuthenticated }) => {
                   </Link>
                 </li>
                 <li className="txt-white">
-                  <Link className="txt-white" to="/MyTickets">
-                    Moji ticketi
+                  <Link className="txt-white" to="/Active">
+                    Aktivni ticketi
                   </Link>
                 </li>
                 <li className="txt-white">
