@@ -51,11 +51,11 @@ const Tickets = () => {
       }
   
       setIsTicketCreationSuccessful(true);
-      setTimeout(() => setIsTicketCreationSuccessful(false), 5000); 
+      setTimeout(() => setIsTicketCreationSuccessful(false), 4000); 
     } catch (error) {
       console.error('Error creating ticket:', error);
       setIsTicketCreationFailed(true);
-      setTimeout(() => setIsTicketCreationFailed(false), 5000); 
+      setTimeout(() => setIsTicketCreationFailed(false), 4000); 
     }
   };
 
@@ -204,20 +204,6 @@ const Tickets = () => {
                       <option key={index} value={option} />
                     ))}
                   </datalist>
-                </div>
-
-
-                <div className="col-span-6">
-                  <label htmlFor="parentID" className="mb-1 block text-sm font-medium text-white">ID ticket-roditelja</label>
-                  <input
-                    type="text"
-                    id="parentID"
-                    name="parentID"
-                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-400 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:cursor-not-allowed text-white disabled:bg-gray-50 disabled:text-white"
-                    placeholder="*Nije obavezno polje"
-                    value={formData.parentID}
-                    onChange={handleChange}
-                  />
                 </div>
 
                 <div className="col-span-6">

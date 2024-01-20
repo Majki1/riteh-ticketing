@@ -9,6 +9,7 @@ const Welcome = () => {
   const [FirstName, setFirstName] = useState("");
   //const [LastName, setLastName] = useState("");
   const [isTableVisible, setTableVisible] = useState(false);
+  const [items, setItems] = useState([]);
 
   const toggleTableVisibility = () => {
     setTableVisible(!isTableVisible);
@@ -35,6 +36,40 @@ const Welcome = () => {
     setFirstName(username); 
   }, []);
 
+  const jwt = document.cookie.split(';').find(cookie => cookie.startsWith('jwt'));
+
+useEffect(() => {
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Authorization': jwt.slice(9).replaceAll("%20", ' '),
+      'Content-Type': 'application/json',
+    },
+  };
+
+  fetch('http://localhost:8080/api/ticket/get-recently-opened-tickets', requestOptions)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log(data);  
+      setItems(data);
+      // data is the JSON object that the API returned
+      // It should have the fields: ticketID, title, room, createdAt, applicant, status
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+}, []);
+
+useEffect(() => {
+  console.log(items);
+}, [items]);
+
+
   
 
     return(
@@ -57,10 +92,12 @@ const Welcome = () => {
                 </thead>
                 <tbody class="divide-y divide-slate-800 border-t border-slate-800">
                   <tr class="hover:bg-slate-600">
-                    <th class="px-6 py-4 font-medium text-white">username</th>
-                    <td class="px-6 py-4 text-white">room</td>
-                    <td class="px-6 py-4 text-white">time</td>
-                    <td class="px-6 py-4 text-white">title</td>
+                  {items.map((item, index) => (
+                    <th key={index} className="px-6 py-4 font-medium text-white">{item.applicant}</th>
+                  ))}
+                    <td class="px-6 py-4 text-white">{items.roomName}</td>
+                    <td class="px-6 py-4 text-white">{items.createdAt}</td>
+                    <td class="px-6 py-4 text-white">{items.title}</td>
                     <td class="px-6 py-4 text-white">
                     <span class="inline-flex items-center gap-1 rounded-full bg-slate-400 px-2 py-1 text-xs font-bold text-red-600 ">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-3 w-3">
