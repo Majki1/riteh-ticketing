@@ -120,13 +120,14 @@ return (
             <col className="w-24" />
           </colgroup>
           <thead className="dark:bg-gray-700">
-            <tr className="text-left">
-              <th className="p-3">Title</th>
-              <th className="p-3">Kategorija</th>
-              <th className="p-3">Vrijeme podizanja</th>
-              <th className="p-3">Lokacija</th>
-              <th className="p-3">Prioritet</th>
-              <th className="p-3">Status/Detalji</th>
+            <tr className="">
+              <th className="p-3 text-left">Title</th>
+              <th className="p-3 text-left">Kategorija</th>
+              <th className="p-3 text-left">Vrijeme podizanja</th>
+              <th className="p-3 text-left">Lokacija</th>
+              <th className="p-3 text-left">Prioritet</th>
+              <th className="p-3 text-left">Status/Detalji</th>
+              {Cookies.get('userRole') === 'agent' &&<th className="p-3 text-right">Edit</th>}
             </tr>
           </thead>
           <tbody>
@@ -152,6 +153,9 @@ return (
                   {item.status === 'otvoreni' && <button className="btn no-animation btn-success">Open</button>}
                   {item.status === 'pending' && <button className="btn no-animation btn-warning">Pending</button>}
                   {item.status === 'closed' && <button className="btn no-animation btn-error">Closed</button>}
+                </td>
+                <td className="p-3 text-right">
+                {Cookies.get('userRole') === 'agent' &&<Link className="btn glass" to>Detalji</Link>}
                 </td>
               </tr>
             ))}

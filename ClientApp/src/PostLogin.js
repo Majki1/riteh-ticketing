@@ -24,7 +24,9 @@ const PostLogin = () => {
     <div>
       {isAuthenticated ? (
         <>
-        <NavMenu isAuthenticated={isAuthenticated} />
+          <Router>
+            <NavMenu isAuthenticated={isAuthenticated} onLogout={handleLogout} userData={userData} />
+          </Router>
         <Welcome />
         </>
       ) : (    

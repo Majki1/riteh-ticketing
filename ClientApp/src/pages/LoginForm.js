@@ -8,26 +8,28 @@ const LoginForm = ({ onLogin }) => {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-      try {
-        const response = await fetch('http://localhost:8080/api/auth/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ userID: username, password: password }),
-        });
+    try {
+      const response = await fetch('http://localhost:8080/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userID: username, password: password }),
+      });
   
-        const headers = await response.headers;
-        const data = await response.json();
-
+      const headers = await response.headers;
+      const data = await response.json();
+  
       if (response.ok && data.success) {
         const token = headers.get('Authorization');
-        console.log('Login successful. Token:', token);
-    
+        const role = data.role;
+        console.log('Login successful. Token:', token, 'Role:', role);
+  
         Cookies.set('jwtToken', token, { expires: 7 }); // expires in 7 days
-
-        onLogin({ username, password, token });
-        navigate('/PostLogin');
+        Cookies.set('userRole', role, { expires: 7 });
+  
+        onLogin({ username, password, token, role });
+        navigate('/Welcome');
       } else {
         console.error('Login failed. Server replied: ', data.description);
       }
