@@ -3,7 +3,9 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './pages.css';
 import Cookies from 'js-cookie';
+import NavMenu from '../components/NavMenu/NavMenu';
 
+const isAuthenticated = 1;
 
 const Welcome = () => {
   const [FirstName, setFirstName] = useState("");
@@ -47,18 +49,15 @@ useEffect(() => {
     },
   };
 
-  fetch('http://localhost:8080/api/ticket/get-recently-opened-tickets', requestOptions)
+  fetch('http://localhost:8080/api/ticket/get-ticket', requestOptions)
     .then(response => {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       return response.json();
     })
-    .then(data => {
-      console.log(data);  
+    .then(data => { 
       setItems(data);
-      // data is the JSON object that the API returned
-      // It should have the fields: ticketID, title, room, createdAt, applicant, status
     })
     .catch(error => {
       console.error('Error:', error);
@@ -69,81 +68,99 @@ useEffect(() => {
   console.log(items);
 }, [items]);
 
+const [PriodropdownOpen, setPrioDropdownOpen] = useState(false);
+const [ServicedropdownOpen, setServiceDropdownOpen] = useState(false);
 
-  
-
-    return(
-        <>
-          <div className="hero min-h-screen bg-base-100">
-            <div className="hero-content flex-col lg:flex-row-reverse">
-            <div class="overflow-hidden border-slate-800 shadow-md">
-            {isTableVisible && (
-              <div class="overflow-hidden rounded-lg border border-slate-800 shadow-md">
-              <table class="w-full border-collapse bg-slate-500 text-left text-sm text-white">
-                <thead class="bg-slate-600">
-                  <tr>
-                    <th scope="col" class="px-6 py-4 font-medium text-gray-900">Name</th>
-                    <th scope="col" class="px-6 py-4 font-medium text-gray-900">Room</th>
-                    <th scope="col" class="px-6 py-4 font-medium text-gray-900">Time</th>
-                    <th scope="col" class="px-6 py-4 font-medium text-gray-900">Title</th>
-                    <th scope="col" class="px-6 py-4 font-medium text-gray-900">State</th>
-                    <th scope="col" class="px-6 py-4 font-medium text-gray-900">Details</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-800 border-t border-slate-800">
-                  <tr class="hover:bg-slate-600">
-                  {items.map((item, index) => (
-                    <th key={index} className="px-6 py-4 font-medium text-white">{item.applicant}</th>
-                  ))}
-                    <td class="px-6 py-4 text-white">{items.roomName}</td>
-                    <td class="px-6 py-4 text-white">{items.createdAt}</td>
-                    <td class="px-6 py-4 text-white">{items.title}</td>
-                    <td class="px-6 py-4 text-white">
-                    <span class="inline-flex items-center gap-1 rounded-full bg-slate-400 px-2 py-1 text-xs font-bold text-red-600 ">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-3 w-3">
-                        <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
-                      </svg>
-                      U obradi
-                    </span>
-                    </td>
-                  <td class="flex justify-end gap-4 px-6 py-4 font-medium"><a href="/Active" class="text-primary-700">Details</a></td>
-                  </tr>
-                  <tr class="hover:bg-slate-600">
-                    <th class="px-6 py-4 font-medium text-white">username</th>
-                    <td class="px-6 py-4 text-white">room</td>
-                    <td class="px-6 py-4 text-white">time</td>
-                    <td class="px-6 py-4 text-white">title</td>
-                    <td class="px-6 py-4 text-white">
-                    <span class="inline-flex items-center gap-1 rounded-full bg-slate-400 px-2 py-1 text-xs font-bold text-red-600 ">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-3 w-3">
-                        <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
-                      </svg>
-                      U obradi
-                    </span>
-                    </td>
-                    <td class="flex justify-end gap-4 px-6 py-4 font-medium"><a href="/Active" class="text-primary-700">Details</a></td>
-                  </tr>
-                </tbody>
-              </table>
-              </div>
-            )}
-            </div>
-
-              <div className='justify-content-start'>
-                <h1 className="text-5xl bg-gradient-to-r from-green-400 to-blue-500 inline-block text-transparent bg-clip-text p-2 font-bold">Dobro došli {FirstName}</h1>
-                <p className="py-6 px-2 text-white">RiTeh ticketing sustav</p>
-                <Link className="btn bg-gradient-to-r text-white from-green-400 to-blue-500 hover:from-pink-500 hover:to-yellow-500" to= '/Tickets'>Ticket</Link>
-                 <button
-                className="btn bg-gradient-to-r text-white from-green-400 to-blue-500 hover:from-pink-500 hover:to-yellow-500"
-                onClick={toggleTableVisibility}
-              >
-                {isTableVisible ? 'Sakrij tablicu' : 'Aktivni ticketi'}
-              </button>
-              </div>
-            </div>
-          </div>
-        </>
-    );
+const togglePrioDropdown = () => {
+  setPrioDropdownOpen(!PriodropdownOpen);
 };
+
+const toggleServiceDropdown = () => {
+  setServiceDropdownOpen(!ServicedropdownOpen);
+}
+
+return (
+  <div>
+    <NavMenu isAuthenticated={isAuthenticated} />
+    <div className="container p-2 mx-auto sm:p-4 dark:text-gray-100 mt-4">
+      <div className="flex items-center mb-4">
+        <h2 className="text-2xl font-semibold leading-none">Prikaz ticketa</h2>
+        <button className="btn ml-4 btn-success">Otvoreni</button>
+        <button className="btn ml-4 btn-warning hover:text-white">Pending</button>
+        <button className="btn ml-4 btn-error">Zatvoreni</button>
+        <div className="dropdown dropdown-bottom">
+          <div tabIndex={0} role="button" className="btn btn-secondary ml-4" onClick={togglePrioDropdown}>Prioritet</div>
+          {PriodropdownOpen && (
+            <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+              <li><a>Visok</a></li>
+              <li><a>Srednji</a></li>
+              <li><a>Nizak</a></li>
+            </ul>
+          )}
+        </div>
+        <div className="dropdown dropdown-bottom">
+          <div tabIndex={0} role="button" className="btn btn-accent ml-4" onClick={toggleServiceDropdown}>Službe</div>
+          {ServicedropdownOpen && (
+            <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+              <li><a>Računalni centrar</a></li>
+              <li><a>Kak se ona druga zvala</a></li>
+            </ul>
+          )}
+        </div>
+        <Link className="btn glass ml-4" to="/Tickets">Novi ticket</Link>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="min-w-full text-xs">
+          <colgroup>
+            <col />
+            <col />
+            <col />
+            <col />
+            <col />
+            <col className="w-24" />
+          </colgroup>
+          <thead className="dark:bg-gray-700">
+            <tr className="text-left">
+              <th className="p-3">Title</th>
+              <th className="p-3">Kategorija</th>
+              <th className="p-3">Vrijeme podizanja</th>
+              <th className="p-3">Lokacija</th>
+              <th className="p-3">Prioritet</th>
+              <th className="p-3">Status/Detalji</th>
+            </tr>
+          </thead>
+          <tbody>
+            {items.map((item, index) => (
+              <tr key={index} className="border-b border-opacity-20 dark:border-gray-700 dark:bg-gray-900">
+                <td className="p-3">
+                  <p>{item.title}</p>
+                </td>
+                <td className="p-3">
+                  <p>{item.kategorija}</p>
+                </td>
+                <td className="p-3">
+                  <p>{item.createdAt}</p>
+                  <p className="dark:text-gray-400">{item.time}</p>
+                </td>
+                <td className="p-3">
+                  <p>{item.roomName}</p>
+                </td>
+                <td className="p-3">
+                  <p>{item.priority}</p>
+                </td>
+                <td className="p-3 text-right">
+                  {item.status === 'otvoreni' && <button className="btn no-animation btn-success">Open</button>}
+                  {item.status === 'pending' && <button className="btn no-animation btn-warning">Pending</button>}
+                  {item.status === 'closed' && <button className="btn no-animation btn-error">Closed</button>}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+);
+}
 
 export default Welcome;
