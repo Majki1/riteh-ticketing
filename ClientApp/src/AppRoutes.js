@@ -1,4 +1,4 @@
-import  Tickets  from "./pages/Tickets";
+import   Tickets   from "./pages/Tickets";
 import { LandingPage } from "./pages/LandingPage";
 import MyTickets  from "./pages/MyTickets";
 import { Closed } from "./pages/ZatvoreniTicketi";
@@ -6,6 +6,7 @@ import LoginForm from "./pages/LoginForm";
 import PostLogin from "./PostLogin";
 import NavMenu from "./components/NavMenu/NavMenu"
 import  Welcome  from './pages/WelcomePage'
+import Details from "./pages/Details";
 
 const AppRoutes = [
   {
@@ -35,6 +36,10 @@ const AppRoutes = [
   {
     path: '/Welcome',
     element: <Welcome/>
+  },
+  {
+    path: '/Details',
+    element: <Details/>
   }
 ];
 

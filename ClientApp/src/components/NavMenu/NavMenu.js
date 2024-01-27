@@ -94,14 +94,8 @@ const NavMenu = ({ isAuthenticated }) => {
             {isDropdownVisible && (
               <ul
                 tabIndex={1}
-                className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
+                className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
               >
-                <li>
-                  <a className="justify-between text-white">Profil</a>
-                </li>
-                <li>
-                  <a className="text-white">Postavke</a>
-                </li>
                 <li>
                   <a className="text-white">Odjava</a>
                 </li>

@@ -17,12 +17,31 @@ module.exports = {
 
       '2xl': '1536px',
       // => @media (min-width: 1536px) { ... }
+    },
+    myTheme: {
+      "primary": "#9f1239",
+          
+      "secondary": "#4338ca",
+               
+      "accent": "#22d3ee",
+               
+      "neutral": "#9ca3af",
+               
+      "base-100": "#374151",
+               
+      "info": "#0369a1",
+               
+      "success": "#84cc16",
+               
+      "warning": "#f59e0b",
+               
+      "error": "#e11d48",
     }
   },
   plugins: [require("daisyui")],
   daisyui: {
-    themes: false, // false: only light + dark | true: all themes | array: specific themes like this ["light", "dark", "cupcake"]
-    darkTheme: "dark", // name of one of the included themes for dark mode
+    themes: true, // false: only light + dark | true: all themes | array: specific themes like this ["light", "dark", "cupcake"]
+    darkTheme: "night", // name of one of the included themes for dark mode
     base: true, // applies background color and foreground color for root element by default
     styled: true, // include daisyUI colors and design decisions for all components
     utils: true, // adds responsive and modifier utility classes

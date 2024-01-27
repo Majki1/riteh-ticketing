@@ -1,0 +1,20 @@
+
+edit, delete, dupe za vd
+agent ima samo status
+djelatnik ima samo details
+
+
+tinymce za markdown
+markdown parser 
+implement image save pricekamo izmjenu apija za slat sliku
+
+implement api call za sort
+promjeni nazive sluzbi i prioriteta
+
+
+cekamo api za ticket update i logout
+
+details page, text box s podatcima, comment section s timestampovima, usernameom i textom
+
+v0.dev za dizajn modala - radi samo za next.js
+

@@ -7,6 +7,7 @@ const isAuthenticated = 1;
 
 const Tickets = () => {
   const [selectedTicket, setSelectedTicket] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null);
   const [selectedRoom, setSelectedRoom] = useState('');
   const [rooms, setRooms] = useState([]);
   const [formData, setFormData] = useState({
@@ -17,6 +18,7 @@ const Tickets = () => {
     parentID: '',
     rememberMe: false,
     realApplicantID: '',
+    selectedFile : '',
   });
   const [categories, setCategories] = useState([]);
 
@@ -148,27 +150,34 @@ const Tickets = () => {
     }
   };
 
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    setSelectedFile(file);
+  };
+
     return (
       <main>
       <NavMenu isAuthenticated={isAuthenticated} />
-      <div className='min-h-screen px-5 pt-20'>
-        <label htmlFor="ticket" className="mb-1 block text-sm font-medium text-white">Kategorija</label>
-        <input
-          type="text"
-          list="ticketOptions"
-          className="select select-bordered w-full max-w-xs text-white bg-slate-700"
-          placeholder="Search and select a ticket"
-          name='selectedTicket'
-          onChange={handleChange}
-        />
-        <datalist id="ticketOptions">
-          {categories.map((option, index) => (
-            <option key={index} value={option.name} title={option.name} />
-          ))}
-        </datalist>
+      <div className='min-h-screen px-5 pt-20 flex'>
+        <div className="w-1/3 pr-2">
+          <label htmlFor="ticket" className="mb-1 block text-sm font-medium text-white">Kategorija</label>
+          <input
+            type="text"
+            list="ticketOptions"
+            className="select select-bordered w-full max-w-xs text-white bg-slate-700"
+            placeholder="Search and select a ticket"
+            name='selectedTicket'
+            onChange={handleChange}
+          />
+          <datalist id="ticketOptions">
+            {categories.map((option, index) => (
+              <option key={index} value={option.name} title={option.name} />
+            ))}
+          </datalist>
+        </div>
 
         {selectedTicket && (
-          <div className="mx-auto max-w-xl">
+          <div className="w-2/3 pl-2 mx-auto max-w-xl">
             <form action="" className="space-y-5">
               <div className="grid grid-cols-12 gap-5">
 
@@ -207,6 +216,7 @@ const Tickets = () => {
                   </datalist>
                 </div>
 
+
                 <div className="col-span-6">
                   <label htmlFor="realApplicantID" className="mb-1 block text-sm font-medium text-white">ID korisnika u čije ime se otvara ticket</label>
                   <input
@@ -218,15 +228,28 @@ const Tickets = () => {
                     value={formData.realApplicantID}
                     onChange={handleChange}
                   />
-                <div class="mb-6">
-                  <label for="large-input" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Opis problema</label>
-                  <input type="text" 
-                    id="description" 
-                    name="description"
-                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-400 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:cursor-not-allowed text-white disabled:bg-gray-50 disabled:text-white"
-                    placeholder='*Nije obavezno polje'
-                    value={formData.description}
-                    onChange={handleChange}
+                  
+                      <div className="mb-6">
+                      <label htmlFor="description" className="block text-white text-sm font-bold mb-2">Opis</label>
+                      <textarea
+                        id="description"
+                        name="description"
+                        rows="4"
+                        placeholder="Ukoliko je potrebno, dodajte screenshotove i slično."
+                        value={formData.description}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 rounded-md focus:ring focus:ring-primary-200 focus:ring-opacity-50 text-white"
+                      />
+                    </div>
+  
+                <div className="col-span-6">
+                  <label htmlFor="image" className="block text-white text-sm font-bold mb-2">Upload Image</label>
+                  <input
+                    type="file"
+                    id="image"
+                    name="image"
+                    onChange={handleImageChange}
+                    className="file-input file-input-bordered file-input-primary w-full max-w-xs text-white"
                   />
                 </div>
           </div>
