@@ -9,26 +9,44 @@ import NavMenu from '../components/NavMenu/NavMenu';
 const isAuthenticated = 1;
 
 const Welcome = () => {
-  const jwt = document.cookie.split(';').find(cookie => cookie.startsWith('jwt'));
-  const [departmentData, setDepartmentData] = useState([{}]);
-  const [FirstName, setFirstName] = useState("");
-  const [isTableVisible, setTableVisible] = useState(false);
-  const [items, setItems] = useState([]);
+  const jwt = document.cookie.split(';').find(cookie => cookie.startsWith('jwt'));//jwt
+
+  const [FirstName, setFirstName] = useState("");//user
+  
+  const [items, setItems] = useState([]);//tickets
+  const [selectedTicket, setSelectedTicket] = useState(null);
+  const [numberOfPages, setNumberOfPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
+
   const [PriodropdownOpen, setPrioDropdownOpen] = useState(false);
   const [ServicedropdownOpen, setServiceDropdownOpen] = useState(false);
   const [ActiondropdownOpen, setActionDropdownOpen] = useState(false);
   const [openDropdownId, setOpenDropdownId] = useState(null);
-  const [selectedTicket, setSelectedTicket] = useState(null);
-  const [numberOfPages, setNumberOfPages] = useState(0);
-  const [currentPage, setCurrentPage] = useState(0);
+  
   const [selectedOption, setSelectedOption] = useState("1");
   const [selectedDepartment, setSelectedDepartment] = useState(null);
   const [selectedPriority, setSelectedPriority] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState(null);
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+  const [selectedLocation, setSelectedLocation] = useState(selectedTicket?.roomName || '');
+
+  const [departmentData, setDepartmentData] = useState([{}]);
   const [newStatus, setNewStatus] = useState(null);
   const [activeTicketId, setActiveTicketId] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [newPrio, setNewPrio] = useState(selectedTicket?.priority || null);
+  const [rooms, setRooms] = useState([]);
+  const [selectedRoom, setSelectedRoom] = useState('');
+  const [ticketData, setTicketData] = useState(null);
+  const [detailsID, setDetailsID] = useState(null);
+  const [deleteID, setDeleteID] = useState(null);
 
-  useEffect(() => {
+  const[ticketSuccess, setTicketSuccess] = useState(false);
+  const[ticketError, setTicketError] = useState(false);
+
+  const [response, setResponse] = useState({});
+
+  useEffect(() => {//departments load
     fetch('http://localhost:8080/api/department/get-all', {
       method: 'GET',
       headers: {
@@ -41,10 +59,57 @@ const Welcome = () => {
       .catch(error => console.error('Error:', error));
   }, []);
 
+  useEffect(() => {//kategorije
+    const fetchData = async () => {
+      try {
+        console.log(jwt.slice(9));
+        const response = await fetch('http://localhost:8080/api/category/get-all', {
+          method: 'POST',
+          headers: {
+            'Authorization': jwt.slice(9).replaceAll("%20", ' ')
+          }
+        });
+  
+        if (!response.ok) {
+          throw new Error('Failed to fetch categories');
+        }
+  
+        const fetchedCategories = await response.json();
+        setCategories(fetchedCategories);
+  
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+  
+    fetchData();
+  }, []);
 
-  const toggleTableVisibility = () => {
-    setTableVisible(!isTableVisible);
-  };
+  useEffect(() => {//rooms
+    const fetchRooms = async () => {
+      try {
+        const jwt = document.cookie.split(';').find(cookie => cookie.startsWith('jwt'));
+        const response = await fetch('http://localhost:8080/api/room/get-all', {
+          method: 'POST',
+          headers: {
+            'Authorization': jwt.slice(9).replaceAll("%20", ' ')
+          }
+        });
+  
+        if (!response.ok) {
+          throw new Error('Failed to fetch rooms');
+        }
+  
+        const fetchedRooms = await response.json();
+        setRooms(fetchedRooms);
+  
+      } catch (error) {
+        console.error('Error fetching rooms:', error);
+      }
+    };
+  
+    fetchRooms();
+  }, []);
 
   useEffect(() => {//jwt load
     const jwt = Cookies.get('jwtToken'); 
@@ -71,7 +136,7 @@ const Welcome = () => {
     handleFilterChange();
   }, [selectedStatus ,selectedPriority, selectedDepartment]);
 
-  const handleFilterChange = () => {
+  const handleFilterChange = () => {//every filter change
 
     const url = new URL(`http://localhost:8080/api/ticket/get-all/${selectedOption}`);
   
@@ -104,7 +169,7 @@ const Welcome = () => {
       });
   };
 
-  const handleStatusChange = () => {
+  const handleStatusChange = () => {//status change
     const requestOptions = {
       method: 'POST',
       headers: {
@@ -155,8 +220,87 @@ const openModal = (ticketId) => {
   toggleActionDropdown();
 };
 
-console.log(departmentData);
+const handleSave = () => {
+  fetch('http://localhost:8080/api/ticket/get-ticket', { 
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': jwt.slice(9).replaceAll("%20", ' '),
+    },
+    body: JSON.stringify({ ticketID: detailsID })
+  })
+  .then(response => response.json())
+  .then(data => {
+    setTicketData(data);
 
+    const formData = new FormData();
+
+    formData.append('jsonData' , JSON.stringify({      
+      parentID: detailsID,
+      title: data.title,
+      description: data.description,
+      room: selectedLocation? selectedLocation : data.room,
+      realApplicantID: data.realApplicantID? data.realApplicantID : null,
+      categoryID: selectedCategoryId? selectedCategoryId : data.categoryID,
+      priority: newPrio? newPrio : data.priority,}));
+    
+
+      console.log('selectedCategoryId:', selectedCategoryId);
+      console.log('data:', data);
+
+    fetch('http://localhost:8080/api/ticket/new', { 
+      method: 'POST',
+      headers: {
+        'Authorization': jwt.slice(9).replaceAll("%20", ' '),
+      },
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      setResponse(data);
+      if(data.success)
+      {
+        setTicketSuccess(true);
+        setTimeout(() => setTicketSuccess(false), 4000);
+        window.location.reload();
+      }
+      else
+      {
+        setTicketError(true);
+        setTimeout(() => setTicketError(false), 4000);
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      setTicketError(true);
+      setTimeout(() => setTicketError(false), 4000);
+    });
+  }
+  )
+};
+
+const deleteTicket = useCallback((id) => {
+  fetch(`http://localhost:8080/api/ticket/delete/${id}`, { 
+    method: 'DELETE',
+    headers: {
+      'Authorization': jwt.slice(9).replaceAll("%20", ' '),
+    },
+  })
+  .then(response => response.json())
+  .then(data => {
+    setResponse(data);
+    if(data.success)
+    {
+      window.location.reload();
+    }
+    else
+    {
+      setTicketError(true);
+      setTimeout(() => setTicketError(false), 4000);
+    }
+  })
+}, []);
+    
 
 return (
   <div>
@@ -255,8 +399,8 @@ return (
                   <ul tabIndex={0} className="dropdown-content dropdown-left z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 absolute">
                     <li><Link to={`/Details/${items.ticketID}`}>Details</Link></li>
                     {Cookies.get('userRole') !== 'user' && <li><a onClick={() => openModal(items.ticketID)}>Change status</a></li>}
-                    {(Cookies.get('userRole') !== 'user' && Cookies.get('userRole') !== 'agent') &&<li><a onClick={() => {document.getElementById('Edit').showModal(); toggleActionDropdown();}}>Edit</a></li>}
-                    {(Cookies.get('userRole') !== 'user' && Cookies.get('userRole') !== 'agent') && <li><a>Delete</a></li>}
+                    {(Cookies.get('userRole') !== 'user' && Cookies.get('userRole') !== 'agent') &&<li><a onClick={() => {document.getElementById('Edit').showModal(); toggleActionDropdown(); setDetailsID(items.ticketID);}}>Edit</a></li>}
+                    {(Cookies.get('userRole') !== 'user' && Cookies.get('userRole') !== 'agent') && <li><a onClick={() => {deleteTicket(items.ticketID)}}>Delete</a></li>}
                     {(Cookies.get('userRole') !== 'user' && Cookies.get('userRole') !== 'agent') &&<li><a>Assign to</a></li>}
                   </ul>
                   </>
@@ -274,21 +418,38 @@ return (
             </form>
             <h3 className="font-bold text-lg">Edit ticket details</h3>
             <label className="label"> Category </label>
-            <input type="text" value={selectedTicket?.categoryName} placeholder="Type here" className="input input-bordered w-full max-w-xs" />
+            <select value={selectedTicket?.categoryName} onChange={e => setSelectedCategoryId(e.target.value)} className="input input-bordered w-full max-w-xs text-white">
+              {categories.map((category, index) => (
+                <option key={index} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>            
             <label className="label"> Title </label>
             <input type="text" value={selectedTicket?.title} placeholder="Type here" className="input input-bordered w-full max-w-xs" />
             <label className="label"> Location </label>
-            <input type="text" value={selectedTicket?.roomName} placeholder="Type here" className="input input-bordered w-full max-w-xs" />
+            <select value={selectedLocation} onChange={e => setSelectedLocation(e.target.value)} className="input input-bordered w-full max-w-xs">
+              {rooms.map((room, index) => (
+                <option key={index} value={room}>
+                  {room}
+                </option>
+              ))}
+            </select>            
             <label className="label"> Priority </label>
-            <input type="text" value={selectedTicket?.priority} placeholder="Type here" className="input input-bordered w-full max-w-xs" />
+            <select value={selectedTicket?.priority} onChange={e => setNewPrio(e.target.value)} className="input input-bordered w-full max-w-xs">
+            <option value="0">Nije određeno</option>
+              <option value="3">Hitno</option>
+              <option value="2">Normalno</option>
+              <option value="1">Nije hitno</option>
+            </select>            
             <label className="label"> ID </label>
-            <input type="text" value={selectedTicket?.ticketID} placeholder="Type here" className="input input-bordered w-full max-w-xs" readOnly/>
+            <input type="text" value={selectedTicket?.ticketID} placeholder="Type here" className="input input-bordered w-full max-w-xs select-none" readOnly/>
 
             <div className="modal-action">
-              <button className="btn btn-primary">Save</button>
               <form method="dialog">
-              <button className="btn">Cancel</button>
-            </form>
+                <button className="btn btn-primary transition-all ease-in-out duration-200" onClick={() => { handleSave(); }}>Save</button>
+                <button className="btn">Cancel</button>
+              </form>
             </div>
           </div>
         </dialog>
@@ -332,6 +493,18 @@ return (
         </div>
         </div>
     </div>
+    {ticketSuccess && (
+    <div role="alert" className="alert alert-success">
+      <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      <span>Edit Success</span>
+    </div>
+  )}
+  {ticketError && (
+    <div role="alert" className="alert alert-error">
+      <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      <span>Error! {response.description}</span>
+    </div>
+  )}
   </div>
 );
 }

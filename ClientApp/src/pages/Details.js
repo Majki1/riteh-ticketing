@@ -50,7 +50,7 @@ const handleCommentToggle = () => {
                 <h2 className="card-title padding-top-2.5">Location</h2>
                 <p className='text-gray-400'>{ticketData.room}</p>
                 <h2 className="card-title padding-top-2.5">Category</h2>
-                <p className='text-gray-400'>{ticketData.category}</p>
+                <p className='text-gray-400'>{ticketData.categoryName}</p>
                 <h2 className="card-title padding-top-2.5">Status</h2>
                 <p className='text-gray-400'>{ticketData.status}</p>
                 <h2 className="card-title padding-top-2.5">Time</h2>
@@ -79,9 +79,10 @@ const handleCommentToggle = () => {
               <button className="btn btn-primary padding-top-2.5" onClick={() => setIsFlipped(!isFlipped)}>Image</button>
               </>
             ) : (
-              <div className="card-back">
-              {ticketData.ticketImage ? <img src={`data:image/jpeg;base64,${ticketData.ticketImage}`} alt="Ticket" className='object-contain'/> : <p className='text-gray-400'>No image uploaded</p>}
-              <button className="btn btn-primary padding-top-2.5" onClick={() => setIsFlipped(!isFlipped)}>Back</button>
+            <div className="card-back">
+              <label className="card-title text-gray-300">Description image</label>
+              {ticketData.ticketImage ? <img src={`data:image/jpeg;base64,${ticketData.ticketImage}`} alt="Ticket" className='object-contain h-auto max-w-lg rounded-lg shadow-xl mx-auto dark:shadow-gray-800'/> : <p className='text-gray-400'>No image uploaded</p>}
+              <button className="btn btn-primary mt-4" onClick={() => setIsFlipped(!isFlipped)}>Back</button>
             </div>
           )}
             </div>
