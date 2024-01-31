@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef} from 'react';
 import './pages.css';
 import NavMenu from '../components/NavMenu/NavMenu';
 import { Link } from 'react-router-dom';
+import { Editor } from '@tinymce/tinymce-react';
+import { useNavigate } from 'react-router-dom';
 
 const isAuthenticated = 1;
 
 const Tickets = () => {
+  const jwt = document.cookie.split(';').find(cookie => cookie.startsWith('jwt'));
+  const editorRef = useRef(null);
   const [selectedTicket, setSelectedTicket] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedRoom, setSelectedRoom] = useState('');
@@ -19,48 +23,81 @@ const Tickets = () => {
     rememberMe: false,
     realApplicantID: '',
     selectedFile : '',
+    priority: '0',
   });
   const [categories, setCategories] = useState([]);
+  const [users, setUsers] = useState([]);
 
-  const [isTicketCreationSuccessful, setIsTicketCreationSuccessful] = useState(false);
-  const [isTicketCreationFailed, setIsTicketCreationFailed] = useState(false);
-  
-  const submitForm = async () => {
-    const jwt = document.cookie.split(';').find(cookie => cookie.startsWith('jwt'));
-    const { title, description, room, categoryID, parentID, realApplicantID } = formData;
+  useEffect(() => {//users
+  const fetchUsers = async () =>{
     const requestOptions = {
       method: 'POST',
       headers: {
         'Authorization': jwt.slice(9).replaceAll("%20", ' '),
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({title, room, categoryID, realApplicantID, parentID, description}),
     };
   
-    console.log('JWT:', jwt);
-    console.log('Request Options:', requestOptions);
-  
     try {
-      const response = await fetch('http://localhost:8080/api/ticket/new', requestOptions);
+      const response = await fetch('http://localhost:8080/api/user/get-users', requestOptions); // Replace with your API endpoint
       if (!response.ok) {
-        const responseBody = await response.text();
-        console.error('Server responded with status', response.status, 'and body', responseBody);
-        throw new Error('Failed to create ticket');
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
   
-      const responseData = await response.json();
-      if (!responseData.success) {
-        throw new Error(responseData.errorDescription);
-      }
-  
-      setIsTicketCreationSuccessful(true);
-      setTimeout(() => setIsTicketCreationSuccessful(false), 4000); 
+      const jsonObjects = await response.json();
+      setUsers(jsonObjects);
+      console.log(jsonObjects);
     } catch (error) {
-      console.error('Error creating ticket:', error);
-      setIsTicketCreationFailed(true);
-      setTimeout(() => setIsTicketCreationFailed(false), 4000); 
+      console.error('Error:', error);
     }
+  }
+  fetchUsers();
+  }, []);
+
+  const navigate = useNavigate();
+
+const submitForm = async () => {
+  const jwt = document.cookie.split(';').find(cookie => cookie.startsWith('jwt'));
+  const { title, description, room, categoryID, parentID, realApplicantID, priority} = formData;
+
+  // Create a new FormData instance
+  const form = new FormData();
+  
+  form.append('image', selectedFile);
+  // Add the JSON data as a string
+  form.append('jsonData', JSON.stringify({title, room, categoryID, realApplicantID, parentID, description, priority: null}));
+
+  // Add the file
+
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Authorization': jwt.slice(9).replaceAll("%20", ' '),
+    },
+    body: form,
   };
+
+  try {
+    const response = await fetch('http://localhost:8080/api/ticket/new', requestOptions);
+    if (!response.ok) {
+      const responseBody = await response.text();
+      console.error('Server responded with status', response.status, 'and body', responseBody);
+      throw new Error('Failed to create ticket');
+    }
+
+    const responseData = await response.json();
+    if (!responseData.success) {
+      throw new Error(responseData.errorDescription);
+    }
+
+    // If the ticket creation is successful, navigate to the /Welcome route
+    navigate('/Welcome');
+  } catch (error) {
+    console.error('Error creating ticket:', error);
+    // If there's an error, show an alert
+    alert('There was an error creating the ticket.');
+  }
+};
 
   const handleRoomChange = (event) => {
     const roomName = event.target.value;
@@ -71,10 +108,9 @@ const Tickets = () => {
     });
   };
 
-  useEffect(() => {
+  useEffect(() => {//kategorije
     const fetchData = async () => {
       try {
-        const jwt = document.cookie.split(';').find(cookie => cookie.startsWith('jwt'));
         console.log(jwt.slice(9));
         const response = await fetch('http://localhost:8080/api/category/get-all', {
           method: 'POST',
@@ -101,7 +137,7 @@ const Tickets = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {
+  useEffect(() => {//rooms
     const fetchRooms = async () => {
       try {
         const jwt = document.cookie.split(';').find(cookie => cookie.startsWith('jwt'));
@@ -174,7 +210,36 @@ const Tickets = () => {
               <option key={index} value={option.name} title={option.name} />
             ))}
           </datalist>
+          <div className='mt-4'>
+            <label className="mb-1 block text-sm font-medium text-white">Opis</label>
+                  <Editor
+                    apiKey='ad7uva7bm7qw480xu8rzob74602k3fws7wxex4pg171kp568'
+                    onInit={(evt, editor) => editorRef.current = editor}
+                    initialValue=""
+                    init={{
+                      height: 500,
+                      menubar: true,
+                      plugins: [
+                        'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                        'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+                      ],
+                      toolbar: 'undo redo | blocks | ' +
+                        'bold italic forecolor | alignleft aligncenter ' +
+                        'alignright alignjustify | bullist numlist outdent indent | ' +
+                        'removeformat | help',
+                      content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+                    }}
+                    onChange={(event) => {
+                      setFormData({
+                        ...formData,
+                        description: event.target.getContent(),
+                      });
+                    }}
+                  />
+                  </div>
         </div>
+        
 
         {selectedTicket && (
           <div className="w-2/3 pl-2 mx-auto max-w-xl">
@@ -223,24 +288,18 @@ const Tickets = () => {
                     type="text"
                     id="realApplicantID"
                     name="realApplicantID"
+                    list="realApplicantOptions"
                     className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-400 focus:ring focus:ring-primary-200 focus:ring-opacity-50 text-white mb-6" // Added margin-bottom here
                     placeholder="*Nije obavezno polje"
                     value={formData.realApplicantID}
                     onChange={handleChange}
                   />
-                  
-                      <div className="mb-6">
-                      <label htmlFor="description" className="block text-white text-sm font-bold mb-2">Opis</label>
-                      <textarea
-                        id="description"
-                        name="description"
-                        rows="4"
-                        placeholder="Ukoliko je potrebno, dodajte screenshotove i slično."
-                        value={formData.description}
-                        onChange={handleChange}
-                        className="w-full px-3 py-2 rounded-md focus:ring focus:ring-primary-200 focus:ring-opacity-50 text-white"
-                      />
-                    </div>
+                  <datalist id="realApplicantOptions">
+                    {users.map((option, index) => (
+                      <option key={index} value={option.userID} title={option.userID} />
+                    ))}
+                  </datalist>
+                  </div>
   
                 <div className="col-span-6">
                   <label htmlFor="image" className="block text-white text-sm font-bold mb-2">Upload Image</label>
@@ -252,37 +311,19 @@ const Tickets = () => {
                     className="file-input file-input-bordered file-input-primary w-full max-w-xs text-white"
                   />
                 </div>
-          </div>
+
                 
                 <div className="col-span-12">
                   <Link
                     type="button"
-                    onClick={(submitForm)}
+                    onClick={submitForm}
                     className="rounded-lg border border-primary-500 bg-primary-500 px-5 py-2.5 text-center text-sm font-medium text-white shadow-sm transition-all hover:border-primary-700 hover:bg-primary-700 focus:ring focus:ring-primary-200 disabled:cursor-not-allowed disabled:border-primary-300 disabled:bg-primary-300"
-                    to="/Welcome"
                   >
                     Submit
                   </Link>
                 </div>
               </div>
             </form>
-          </div>
-        )}
-        {isTicketCreationSuccessful && (
-          <div role="alert" className="alert alert-success alert-bottom">
-            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span>Ticket uspješno postavljen!</span>
-          </div>
-        )}
-
-        {isTicketCreationFailed && (
-          <div role="alert" className="alert alert-error alert-bottom">
-            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          <span>Error, pokušajte ponovo ili kontaktirajte admina.</span>
           </div>
         )}
       </div>

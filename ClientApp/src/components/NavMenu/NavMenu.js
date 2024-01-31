@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './NavMenu.css';
+import Cookies from 'js-cookie';
 
 
 const isAuthenticated = 1;
@@ -8,6 +9,7 @@ const isAuthenticated = 1;
 
 const NavMenu = ({ isAuthenticated }) => {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
+  const [firstName, setFirstName] = useState('');
 
   const toggleDropdown = () => {
     setDropdownVisible(!isDropdownVisible);
@@ -40,7 +42,37 @@ const NavMenu = ({ isAuthenticated }) => {
       };
     
       fetchImage();
+    }, []);  
+
+    useEffect(() => {
+      const jwt = Cookies.get('jwtToken'); 
+      if (!jwt) {
+        console.error('JWT not found in cookies');
+        return;
+      }
+    
+      const payloadBase64Url = jwt.split('.')[1];
+      const payloadBase64 = payloadBase64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const payloadJson = atob(payloadBase64);
+      const payload = JSON.parse(payloadJson);
+    
+      const username = payload.firstName; 
+      if (!username) {
+        console.error('Username not found in JWT payload');
+        return;
+      }
+    
+      setFirstName(username); 
     }, []);
+
+    const logout = () => {
+      // Remove the JWT from the cookies
+      Cookies.remove('jwt');
+    
+      // Redirect the user to the landing page
+      // Replace '/' with the path to your landing page if it's different
+      window.location.href = '/';
+    };
     
 
   return (
@@ -91,15 +123,18 @@ const NavMenu = ({ isAuthenticated }) => {
             </div>
           </div>
           <div className="navbar-end">
+            <h2 className='text-white'>{firstName}</h2>
             {isDropdownVisible && (
+              <div className='dropdown dropdown-bottom absolute'>
               <ul
                 tabIndex={1}
-                className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
+                className="z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
               >
                 <li>
-                  <a className="text-white">Odjava</a>
+                  <a onClick={logout} className="text-white">Odjava</a>
                 </li>
               </ul>
+              </div>
             )}
             <label
               tabIndex={1}

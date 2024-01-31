@@ -38,7 +38,7 @@ const AppRoutes = [
     element: <Welcome/>
   },
   {
-    path: '/Details',
+    path: '/Details/:ticketID',
     element: <Details/>
   }
 ];
