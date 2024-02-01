@@ -11,7 +11,7 @@ const Details = () => {
         const jwt = document.cookie.split(';').find(cookie => cookie.startsWith('jwt'));
         const { ticketID } = useParams();
         const [isFlipped, setIsFlipped] = useState(false);
-        const [comentToggle, setComentToggle] = useState(false);
+        const [commentToggle, setCommentToggle] = useState(false);
 
         useEffect(() => {
               
@@ -30,9 +30,8 @@ const Details = () => {
 
 
 const handleCommentToggle = () => {
-  setComentToggle(!comentToggle);
+  setCommentToggle(!commentToggle);
 }
-
 
 
     return (
@@ -94,40 +93,36 @@ const handleCommentToggle = () => {
           </div>
 
           <div class="container mx-auto px-4 py-8">
-        <div class="bg-gray-300 rounded-lg p-4 mb-4">
-            <div class="flex items-center">
+          {ticketData?.changes.map((change, index) => (
+            <div key={index} class="bg-gray-300 rounded-lg p-4 mb-4">
+              <div class="flex items-center">
                 <div>
-                    <h2 class="font-bold">username</h2>
-                    <p class="text-gray-500">09:31 21-11-2023</p>
+                  <h2 class="font-bold">{change.user}</h2>
+                  <p class="text-gray-500">{change.changedAt}</p>
                 </div>
+              </div>
+              <p class="mt-4"><strong>Promjenjeno polje: </strong>{change.changedField}</p>
+              <p class="mt-4">{change.change}</p>
+              <div className="flex items-center">
+                <input type="text" placeholder="Enter your comment..." className="input w-full max-w-xs bg-transparent ml-4 mt-4" />
+                <button class="btn bg-indigo-900 mt-4" onClick={handleCommentToggle}>Comments</button>
+              </div>
             </div>
-            <p class="mt-4">Change that happened</p>
-            <div className="flex items-center">
-              <input type="text" placeholder="Enter your comment..." className="input w-full max-w-xs bg-transparent ml-4 mt-4" />
-              <button class="btn bg-indigo-900 mt-4" onClick={handleCommentToggle}>Comments</button>
-            </div>
-        </div>
-        {comentToggle && (
-        <div class="bg-gray-300 rounded-lg p-4">
-            <h3 class="font-bold mb-4">Comments</h3>
-            <div class="border-t border-gray-200 mb-4"></div>
-            <div class="mb-4">
+          ))}
+          {commentToggle && (
+            <div class="bg-gray-300 rounded-lg p-4">
+              <h3 class="font-bold mb-4">Comments</h3>
+              <div class="border-t border-gray-200 mb-4"></div>
+              <div class="mb-4">
                 <div>
-                    <h2 class="font-bold">Jane Smith</h2>
-                    <p class="text-gray-500">@janesmith</p>
-                    <p class="mt-2">Great post!</p>
-               </div>
-            </div>
-            <div class="mb-4">
-                <div>
-                    <h2 class="font-bold">John Doe</h2>
-                    <p class="text-gray-500">@johndoe</p>
-                    <p class="mt-2">Thanks!</p>
+                  <h2 class="font-bold">Jane Smith</h2>
+                  <p class="text-gray-500">@janesmith</p>
+                  <p class="mt-2">Great post!</p>
                 </div>
+              </div>
             </div>
+          )}
         </div>
-        )}
-    </div>
         </>
     );
 };

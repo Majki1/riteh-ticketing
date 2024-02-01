@@ -300,6 +300,10 @@ const deleteTicket = useCallback((id) => {
     }
   })
 }, []);
+
+const assignTo = useCallback((id) => {
+  console.log('assignTo:', id);
+}, []);
     
 
 return (
@@ -401,7 +405,7 @@ return (
                     {Cookies.get('userRole') !== 'user' && <li><a onClick={() => openModal(items.ticketID)}>Change status</a></li>}
                     {(Cookies.get('userRole') !== 'user' && Cookies.get('userRole') !== 'agent') &&<li><a onClick={() => {document.getElementById('Edit').showModal(); toggleActionDropdown(); setDetailsID(items.ticketID);}}>Edit</a></li>}
                     {(Cookies.get('userRole') !== 'user' && Cookies.get('userRole') !== 'agent') && <li><a onClick={() => {deleteTicket(items.ticketID)}}>Delete</a></li>}
-                    {(Cookies.get('userRole') !== 'user' && Cookies.get('userRole') !== 'agent') &&<li><a>Assign to</a></li>}
+                    {(Cookies.get('userRole') !== 'user' && Cookies.get('userRole') !== 'agent') &&<li><a onClick={() => assignTo(items.ticketID)}>Assign to</a></li>}
                   </ul>
                   </>
                 )}
@@ -469,8 +473,8 @@ return (
             </select>
             <div className="modal-action">
             <form method="dialog">
+              <button className="btn btn-primary" onClick={handleStatusChange}>Save</button>
               <button className="btn">Cancel</button>
-              <button className="btn btn-primary" onClick={{handleStatusChange}}>Save</button>
             </form>
             </div>
           </div>
