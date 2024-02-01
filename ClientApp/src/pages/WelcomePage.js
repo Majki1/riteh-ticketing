@@ -529,12 +529,14 @@ return (
               <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
             </form>
             <h3 className="font-bold text-lg">Assign an agent</h3>
-            <select value={selectedAgentID} onSelect={(event) => setSelectedAgentID(event.target.value)}>
-              {agents.map((agent) => (
-                <option key={agent.agentID} value={agent.agentID}>
-                  {agent.displayDetails}
-                </option>
-              ))}
+            <select value={selectedAgentID} onChange={(event) => setSelectedAgentID(event.target.value)}>
+              {Cookies.get('userRole') != 'user' ? (
+                agents.map((agent) => (
+                  <option key={agent.agentID} value={agent.agentID}>
+                    {agent.displayDetails}
+                  </option>
+                ))
+              ) : null}
             </select>
             <div className="modal-action">
             <form method="dialog">
