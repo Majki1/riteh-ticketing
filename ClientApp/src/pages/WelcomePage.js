@@ -1,10 +1,11 @@
 //Welcome Page
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import Edit from '../components/Edit_modal';
 import { Link } from 'react-router-dom';
 import './pages.css';
 import Cookies from 'js-cookie';
 import NavMenu from '../components/NavMenu/NavMenu';
+import { data } from 'autoprefixer';
 
 const isAuthenticated = 1;
 
@@ -29,6 +30,7 @@ const Welcome = () => {
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(selectedTicket?.roomName || '');
+  const [selectedAgentID, setSelectedAgentID] = useState(null);
 
   const [departmentData, setDepartmentData] = useState([{}]);
   const [newStatus, setNewStatus] = useState(null);
@@ -40,11 +42,26 @@ const Welcome = () => {
   const [ticketData, setTicketData] = useState(null);
   const [detailsID, setDetailsID] = useState(null);
   const [deleteID, setDeleteID] = useState(null);
+  const [assignID, setAssignID] = useState(null);
+  const [agents, setAgents] = useState([]);
 
   const[ticketSuccess, setTicketSuccess] = useState(false);
   const[ticketError, setTicketError] = useState(false);
 
   const [response, setResponse] = useState({});
+
+  useEffect(() => {//agents load
+    fetch('http://localhost:8080/api/employee/get-all-agents', {
+      method: 'GET',
+      headers: {
+        'Authorization': jwt.slice(9).replaceAll("%20", ' '),
+      }
+    })
+      .then(response => response.json())
+      .then(data => setAgents(data))
+      .catch(error => console.error('Error:', error));
+  }, []);
+
 
   useEffect(() => {//departments load
     fetch('http://localhost:8080/api/department/get-all', {
@@ -187,11 +204,15 @@ const Welcome = () => {
         return response.json();
       })
       .then(data => {
-        console.log('Server response:', data);
+        if(data.success)
+        {
+          window.location.reload();
+        }
       })
       .catch(error => {
         console.error('Error:', error);
       });
+      
   };
 
 
@@ -301,9 +322,31 @@ const deleteTicket = useCallback((id) => {
   })
 }, []);
 
-const assignTo = useCallback((id) => {
-  console.log('assignTo:', id);
-}, []);
+const Assign = useCallback(() => {
+    fetch('http://localhost:8080/api/ticket/assign-agent', { 
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': jwt.slice(9).replaceAll("%20", ' '),
+      },
+      body: JSON.stringify({ ticketID: assignID, agentID: selectedAgentID })
+    })
+    .then(response => response.json())
+    .then(data => {
+      setResponse(data);
+      if(data.success)
+      {
+        window.location.reload();
+      }
+      else
+      {
+        setTicketError(true);
+        setTimeout(() => setTicketError(false), 4000);
+      }
+    })
+   }, [selectedAgentID, assignID]);
+
+
     
 
 return (
@@ -405,7 +448,7 @@ return (
                     {Cookies.get('userRole') !== 'user' && <li><a onClick={() => openModal(items.ticketID)}>Change status</a></li>}
                     {(Cookies.get('userRole') !== 'user' && Cookies.get('userRole') !== 'agent') &&<li><a onClick={() => {document.getElementById('Edit').showModal(); toggleActionDropdown(); setDetailsID(items.ticketID);}}>Edit</a></li>}
                     {(Cookies.get('userRole') !== 'user' && Cookies.get('userRole') !== 'agent') && <li><a onClick={() => {deleteTicket(items.ticketID)}}>Delete</a></li>}
-                    {(Cookies.get('userRole') !== 'user' && Cookies.get('userRole') !== 'agent') &&<li><a onClick={() => assignTo(items.ticketID)}>Assign to</a></li>}
+                    {(Cookies.get('userRole') !== 'user' && Cookies.get('userRole') !== 'agent') &&<li><a onClick={() => {document.getElementById('Assign').showModal(); toggleActionDropdown(); setAssignID(items.ticketID)}}>Assign to</a></li>}
                   </ul>
                   </>
                 )}
@@ -451,8 +494,8 @@ return (
 
             <div className="modal-action">
               <form method="dialog">
-                <button className="btn btn-primary transition-all ease-in-out duration-200" onClick={() => { handleSave(); }}>Save</button>
                 <button className="btn">Cancel</button>
+                <button className="btn btn-primary transition-all ease-in-out duration-200" onClick={() => { handleSave(); }}>Save</button>
               </form>
             </div>
           </div>
@@ -473,8 +516,30 @@ return (
             </select>
             <div className="modal-action">
             <form method="dialog">
-              <button className="btn btn-primary" onClick={handleStatusChange}>Save</button>
               <button className="btn">Cancel</button>
+              <button className="btn btn-primary" onClick={handleStatusChange}>Save</button>
+            </form>
+            </div>
+          </div>
+        </dialog>
+
+        <dialog id="Assign" className="modal">
+          <div className="modal-box">
+            <form method="dialog">
+              <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            </form>
+            <h3 className="font-bold text-lg">Assign an agent</h3>
+            <select value={selectedAgentID} onSelect={(event) => setSelectedAgentID(event.target.value)}>
+              {agents.map((agent) => (
+                <option key={agent.agentID} value={agent.agentID}>
+                  {agent.displayDetails}
+                </option>
+              ))}
+            </select>
+            <div className="modal-action">
+            <form method="dialog">
+              <button className="btn">Cancel</button>
+              <button className="btn btn-primary" onClick={Assign}>Save</button>
             </form>
             </div>
           </div>

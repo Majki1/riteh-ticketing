@@ -67,7 +67,8 @@ const NavMenu = ({ isAuthenticated }) => {
 
     const logout = () => {
       // Remove the JWT from the cookies
-      Cookies.remove('jwt');
+      Cookies.remove('jwtToken');
+      Cookies.remove('userRole');
     
       // Redirect the user to the landing page
       // Replace '/' with the path to your landing page if it's different
